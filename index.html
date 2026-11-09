@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TuProfe20 Lab: Triángulos Rectángulos Notables</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap');
+        
+        body { margin: 0; padding: 0; overflow: hidden; width: 100vw; height: 100dvh; user-select: none; }
+        .font-fun { font-family: 'Nunito', sans-serif; }
+        
+        @keyframes floatUp { 
+            0% { transform: translateY(105vh) rotate(0deg); } 
+            100% { transform: translateY(-105vh) rotate(360deg); } 
+        }
+        @keyframes fadeInScale {
+            0% { opacity: 0; transform: scale(0.9) translate(-50%, -50%); }
+            100% { opacity: 1; transform: scale(1) translate(-50%, -50%); }
+        }
+        @keyframes popIn {
+            0% { opacity: 0; transform: translate(-50%, -50%) scale(0.5); }
+            70% { opacity: 1; transform: translate(-50%, -50%) scale(1.1); }
+            100% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+        }
+        @keyframes slideInRight { 
+            0% { opacity: 0; transform: translateX(15px); } 
+            100% { opacity: 1; transform: translateX(0); } 
+        }
+        @keyframes confettiExplosion { 
+            0% { transform: translate(0, 0) scale(1) rotate(0deg); opacity: 1; } 
+            100% { transform: translate(var(--tx), var(--ty)) scale(0) rotate(var(--rot)); opacity: 0; } 
+        }
+
+        .scrollbar-hide::-webkit-scrollbar { display: none; }
+        .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+
+        .animate-floatUp { animation: floatUp linear infinite; }
+        .animate-fadeInScale { animation: fadeInScale 0.3s ease-out forwards; }
+        .animate-popIn { animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+        .animate-slideInRight { animation: slideInRight 0.3s ease-out forwards; }
+        .animate-confettiExplosion { animation: confettiExplosion 1.8s cubic-bezier(0.25, 1, 0.5, 1) forwards; }
+
+        .katex { font-weight: 900 !important; }
+        .math-enunciado .katex { font-size: clamp(1rem, 2vw, 1.4rem) !important; color: #ffffff !important; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
+        .math-label .katex { color: inherit !important; font-size: inherit !important; font-weight: 900 !important; filter: drop-shadow(0px 2px 2px rgba(0,0,0,0.2)); text-shadow: 1px 1px 0px rgba(255,255,255,0.7), -1px -1px 0px rgba(255,255,255,0.7); }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useRef, memo } = React;
+
+        const Icon = ({ paths, className = "", size = 24 }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className={className} dangerouslySetInnerHTML={{__html: paths}} />
+        );
+
+        const VolumeX = (p) => <Icon {...p} paths='<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/>' />;
+        const Volume2 = (p) => <Icon {...p} paths='<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/>' />;
+        const Rocket = (p) => <Icon {...p} paths='<path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/>' />;
+        const Activity = (p) => <Icon {...p} paths='<polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>' />;
+        const ChevronLeft = (p) => <Icon {...p} paths='<polyline points="15 18 9 12 15 6"/>' />;
+        const ChevronRight = (p) => <Icon {...p} paths='<polyline points="9 18 15 12 9 6"/>' />;
+        const Lightbulb = (p) => <Icon {...p} paths='<path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.9 1.2 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/>' />;
+
+        const AudioController = {
+            ctx: null, muted: false,
+            init: function() {
+                if (this.ctx) return;
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                if (AudioContext) this.ctx = new AudioContext();
+            },
+            play: function(type) {
+                if (this.muted || !this.ctx) return;
+                if (this.ctx.state === 'suspended') this.ctx.resume();
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                osc.connect(gain); gain.connect(this.ctx.destination);
+                const now = this.ctx.currentTime;
+                
+                if (type === 'pop') {
+                    osc.type = 'sine'; osc.frequency.setValueAtTime(500, now); osc.frequency.exponentialRampToValueAtTime(800, now + 0.1);
+                    gain.gain.setValueAtTime(0.25, now); gain.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
+                    osc.start(now); osc.stop(now + 0.1);
+                } else if (type === 'pop-reverse') {
+                    osc.type = 'triangle'; osc.frequency.setValueAtTime(650, now); osc.frequency.exponentialRampToValueAtTime(280, now + 0.12);
+                    gain.gain.setValueAtTime(0.2, now); gain.gain.exponentialRampToValueAtTime(0.01, now + 0.12);
+                    osc.start(now); osc.stop(now + 0.12);
+                } else if (type === 'success') {
+                    osc.type = 'triangle'; osc.frequency.setValueAtTime(440, now); osc.frequency.setValueAtTime(554, now + 0.1); osc.frequency.setValueAtTime(659, now + 0.2);
+                    gain.gain.setValueAtTime(0, now); gain.gain.linearRampToValueAtTime(0.2, now + 0.05); gain.gain.linearRampToValueAtTime(0, now + 0.4);
+                    osc.start(now); osc.stop(now + 0.4);
+                }
+            },
+            toggleMute: function() { this.muted = !this.muted; return this.muted; }
+        };
+
+        const MathDisplay = memo(({ latex, className = "", inline = false }) => {
+            const containerRef = useRef(null);
+            useEffect(() => {
+                if (containerRef.current && window.katex) {
+                    try { window.katex.render(latex, containerRef.current, { displayMode: !inline, throwOnError: false }); }
+                    catch (e) { containerRef.current.innerText = latex; }
+                }
+            }, [latex, inline]);
+            return inline ? <span ref={containerRef} className={`inline-block align-middle ${className}`} /> : <div className={`relative w-full flex justify-center ${className}`}><div ref={containerRef} /></div>;
+        });
+
+        const DrawingCanvas = () => {
+            const canvasRef = useRef(null);
+            const [isDrawing, setIsDrawing] = useState(false);
+            const [isDrawMode, setIsDrawMode] = useState(false);
+            const [tool, setTool] = useState('pen'); 
+            const [penColor, setPenColor] = useState('#ef4444');
+            const [penWidth, setPenWidth] = useState(6);
+            const penPointsRef = useRef([]);
+            const activePointerRef = useRef(null);
+            const savedImageRef = useRef(null);
+            const historyRef = useRef([]);
+            const startPosRef = useRef({x:0, y:0});
+
+            const undo = () => {
+                const canvas = canvasRef.current;
+                if (!canvas) return;
+                const ctx = canvas.getContext('2d');
+                if (historyRef.current.length > 0) {
+                    const lastState = historyRef.current.pop();
+                    ctx.putImageData(lastState, 0, 0);
+                    savedImageRef.current = lastState;
+                } else {
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    if (canvas.width > 0 && canvas.height > 0) {
+                        savedImageRef.current = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                    }
+                }
+            };
+
+            useEffect(() => {
+                const handleKeyDown = (e) => {
+                    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z') {
+                        e.preventDefault();
+                        undo();
+                    }
+                };
+                window.addEventListener('keydown', handleKeyDown);
+                return () => window.removeEventListener('keydown', handleKeyDown);
+            }, []);
+
+            useEffect(() => {
+                const canvas = canvasRef.current;
+                if (!canvas || !canvas.parentElement) return;
+                const observer = new ResizeObserver((entries) => {
+                    for (let entry of entries) {
+                        const { width, height } = entry.contentRect;
+                        const ctx = canvas.getContext('2d');
+                        let imgData = null;
+                        if (canvas.width > 0 && canvas.height > 0) {
+                            try { imgData = ctx.getImageData(0, 0, canvas.width, canvas.height); } catch (e) {}
+                        }
+                        canvas.width = width; canvas.height = height;
+                        if (imgData) ctx.putImageData(imgData, 0, 0);
+                    }
+                });
+                observer.observe(canvas.parentElement);
+                return () => observer.disconnect();
+            }, []);
+
+            const hexToRgba = (hex, alpha) => {
+                const r = parseInt(hex.slice(1, 3), 16), g = parseInt(hex.slice(3, 5), 16), b = parseInt(hex.slice(5, 7), 16);
+                return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+            };
+
+            const startDrawing = (e) => {
+                if (!isDrawMode || activePointerRef.current !== null || (e.pointerType === 'mouse' && e.button !== 0)) return;
+                const canvas = canvasRef.current;
+                const ctx = canvas.getContext('2d');
+                const rect = canvas.getBoundingClientRect();
+                
+                ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+                if (tool === 'highlighter') { ctx.lineWidth = 24; ctx.strokeStyle = hexToRgba(penColor, 0.3); ctx.globalCompositeOperation = 'multiply'; } 
+                else { ctx.lineWidth = penWidth; ctx.strokeStyle = penColor; ctx.globalCompositeOperation = 'source-over'; }
+
+                const startX = e.clientX - rect.left, startY = e.clientY - rect.top;
+                
+                const currentState = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                historyRef.current.push(currentState);
+                savedImageRef.current = currentState;
+                startPosRef.current = { x: startX, y: startY };
+                
+                ctx.beginPath(); ctx.moveTo(startX, startY);
+                penPointsRef.current = [{ x: startX, y: startY }];
+                activePointerRef.current = e.pointerId;
+                canvas.setPointerCapture(e.pointerId);
+                setIsDrawing(true);
+            };
+
+            const draw = (e) => {
+                if (activePointerRef.current !== e.pointerId || !isDrawMode) return;
+                const canvas = canvasRef.current;
+                const ctx = canvas.getContext('2d');
+                const rect = canvas.getBoundingClientRect();
+                let currentX = e.clientX - rect.left, currentY = e.clientY - rect.top;
+
+                if (e.shiftKey) {
+                    ctx.putImageData(savedImageRef.current, 0, 0);
+                    ctx.beginPath(); 
+                    ctx.moveTo(startPosRef.current.x, startPosRef.current.y);
+                    if (Math.abs(currentX - startPosRef.current.x) > Math.abs(currentY - startPosRef.current.y)) {
+                        currentY = startPosRef.current.y;
+                    } else {
+                        currentX = startPosRef.current.x;
+                    }
+                    ctx.lineTo(currentX, currentY); 
+                    ctx.stroke();
+                } else {
+                    if (tool === 'highlighter') ctx.putImageData(savedImageRef.current, 0, 0);
+                    ctx.lineTo(currentX, currentY); ctx.stroke();
+                }
+            };
+
+            const stopDrawing = () => {
+                activePointerRef.current = null;
+                if (isDrawing) { canvasRef.current.getContext('2d').closePath(); setIsDrawing(false); }
+            };
+
+            const selectTool = (nextTool) => {
+                stopDrawing(); AudioController.play('pop');
+                setIsDrawMode(nextTool !== 'selector');
+                if (nextTool !== 'selector') setTool(nextTool);
+            };
+
+            return (
+                <>
+                    <div style={{zIndex: 120, pointerEvents: 'auto'}} className="absolute top-2 right-2 flex flex-wrap max-w-[calc(100%-1rem)] justify-end gap-2 bg-white/80 p-1.5 rounded-xl backdrop-blur-sm shadow-md border border-slate-200">
+                        <button onClick={() => selectTool('selector')} className={`px-3 py-1.5 text-xs sm:text-sm font-black rounded-lg border-2 shadow-sm ${!isDrawMode ? 'bg-cyan-500 text-white border-cyan-600' : 'bg-white text-slate-600 border-slate-300'}`}>🖱️ Selector</button>
+                        <button onClick={() => selectTool('pen')} className={`px-3 py-1.5 text-xs sm:text-sm font-black rounded-lg border-2 shadow-sm ${isDrawMode && tool === 'pen' ? 'bg-indigo-500 text-white border-indigo-600 scale-105' : 'bg-white text-slate-600 border-slate-300'}`}>🖊️ Lápiz</button>
+                        <button onClick={() => selectTool('highlighter')} className={`px-3 py-1.5 text-xs sm:text-sm font-black rounded-lg border-2 shadow-sm ${isDrawMode && tool === 'highlighter' ? 'bg-yellow-400 text-slate-900 border-yellow-500 scale-105' : 'bg-white text-slate-600 border-slate-300'}`}>🖍️ Resaltador</button>
+                        {isDrawMode && (
+                            <>
+                                <button onClick={undo} className="px-3 py-1.5 text-xs sm:text-sm font-black bg-white text-orange-500 border-2 border-orange-300 rounded-lg shadow-sm" title="Deshacer (Ctrl+Z)">↩️ Deshacer</button>
+                                <button onClick={() => {
+                                    historyRef.current.push(canvasRef.current.getContext('2d').getImageData(0, 0, canvasRef.current.width, canvasRef.current.height));
+                                    canvasRef.current.getContext('2d').clearRect(0, 0, canvasRef.current.width, canvasRef.current.height)
+                                }} className="px-3 py-1.5 text-xs sm:text-sm font-black bg-white text-rose-600 border-2 border-rose-300 rounded-lg shadow-sm">🗑️ Limpiar</button>
+                            </>
+                        )}
+                    </div>
+                    {isDrawMode && (
+                        <div className="absolute top-1/2 right-4 -translate-y-1/2 z-[110] flex flex-col gap-3 p-2 bg-white/90 backdrop-blur-md rounded-xl border-[3px] border-slate-200 shadow-xl pointer-events-auto">
+                            {['#ef4444', '#0f172a', '#3b82f6', '#22c55e', '#facc15'].map(hex => (
+                                <button key={hex} onClick={() => setPenColor(hex)} className={`w-8 h-8 rounded-full border-[3px] shadow-sm transition-all ${penColor === hex ? 'border-white outline outline-[3px] outline-slate-800 scale-110' : 'border-black/20'}`} style={{backgroundColor: hex}}/>
+                            ))}
+                        </div>
+                    )}
+                    <canvas ref={canvasRef} style={{ zIndex: 100, pointerEvents: isDrawMode ? 'auto' : 'none', touchAction: isDrawMode ? 'none' : 'auto' }} className={`absolute inset-0 z-[100] touch-none ${isDrawMode ? 'cursor-crosshair' : ''}`} onPointerDown={startDrawing} onPointerMove={draw} onPointerUp={stopDrawing} onPointerLeave={stopDrawing} />
+                </>
+            );
+        };
+
+        const ReminderTriangle = ({ type }) => {
+            let points, rightAngle, arcs, labels;
+            
+            if (type === "30-60") {
+                points = "20,20 20,120 140,120";
+                rightAngle = "20,110 30,110 30,120";
+                arcs = ["M20,40 A20,20 0 0,0 30,36", "M125,120 A20,20 0 0,0 133,110"];
+                labels = [
+                    { x: 30, y: 55, text: "60°", isAngle: true },
+                    { x: 110, y: 112, text: "30°", isAngle: true },
+                    { x: 5, y: 70, text: "k" },
+                    { x: 80, y: 135, text: "k√3" },
+                    { x: 85, y: 65, text: "2k" },
+                    { x: 20, y: 10, text: "A" },
+                    { x: 10, y: 125, text: "B" },
+                    { x: 150, y: 125, text: "C" }
+                ];
+            } else if (type === "45-45") {
+                points = "20,20 20,120 120,120";
+                rightAngle = "20,110 30,110 30,120";
+                arcs = ["M20,45 A25,25 0 0,0 38,38", "M95,120 A25,25 0 0,0 102,102"];
+                labels = [
+                    { x: 32, y: 55, text: "45°", isAngle: true },
+                    { x: 85, y: 105, text: "45°", isAngle: true },
+                    { x: 5, y: 70, text: "k" },
+                    { x: 70, y: 135, text: "k" },
+                    { x: 80, y: 65, text: "k√2" },
+                    { x: 20, y: 10, text: "A" },
+                    { x: 10, y: 125, text: "B" },
+                    { x: 130, y: 125, text: "C" }
+                ];
+            } else if (type === "37-53") {
+                points = "20,20 20,120 130,120";
+                rightAngle = "20,110 30,110 30,120";
+                arcs = ["M20,40 A20,20 0 0,0 32,36", "M110,120 A20,20 0 0,0 118,105"];
+                labels = [
+                    { x: 30, y: 55, text: "53°", isAngle: true },
+                    { x: 95, y: 108, text: "37°", isAngle: true },
+                    { x: 5, y: 70, text: "3k" },
+                    { x: 75, y: 135, text: "4k" },
+                    { x: 85, y: 65, text: "5k" },
+                    { x: 20, y: 10, text: "A" },
+                    { x: 10, y: 125, text: "B" },
+                    { x: 140, y: 125, text: "C" }
+                ];
+            }
+
+            return (
+                <div className="bg-gradient-to-br from-indigo-50 to-blue-100 p-3 rounded-2xl border-2 border-indigo-200 shadow-md flex flex-col items-center">
+                    <h4 className="text-xs sm:text-sm font-black text-indigo-700 uppercase tracking-widest mb-1 flex items-center gap-1"><Lightbulb className="w-4 h-4"/> Recordatorio</h4>
+                    <svg viewBox="0 0 140 140" className="w-32 h-32 sm:w-48 sm:h-48 drop-shadow-md">
+                        <polygon points={points} fill="rgba(99, 102, 241, 0.1)" stroke="#4f46e5" strokeWidth="2.5" strokeLinejoin="round" />
+                        <polyline points={rightAngle} fill="none" stroke="#4f46e5" strokeWidth="2" />
+                        {arcs.map((arc, i) => <path key={i} d={arc} fill="none" stroke="#4f46e5" strokeWidth="1.5" />)}
+                        {labels.map((lbl, i) => (
+                            <text key={i} x={lbl.x} y={lbl.y} fontSize={lbl.isAngle ? "11" : "14"} fontWeight="900" fill={lbl.isAngle ? "#e11d48" : "#4338ca"} textAnchor="middle" alignmentBaseline="middle">{lbl.text}</text>
+                        ))}
+                    </svg>
+                </div>
+            );
+        };
+
+        const TriangleGraphic = memo(({ config, currentStep }) => {
+            if (!config) return null;
+            return (
+                <div className="relative w-full max-w-lg aspect-[4/3] mx-auto z-10 flex items-center justify-center pointer-events-none">
+                    <svg viewBox="0 0 400 300" className="absolute inset-0 w-full h-full drop-shadow-xl overflow-visible">
+                        <polygon points={config.points} fill="rgba(6, 182, 212, 0.08)" stroke="#06b6d4" strokeWidth="4" strokeLinejoin="round" />
+                        {config.rightAngle && <polyline points={config.rightAngle} fill="none" stroke="#06b6d4" strokeWidth="3" />}
+                        {config.arcs && config.arcs.map((arc, i) => <path key={i} d={arc} fill="none" stroke="#06b6d4" strokeWidth="3" />)}
+                        {config.lines && config.lines.map((l, i) => <line key={i} x1={l[0]} y1={l[1]} x2={l[2]} y2={l[3]} stroke="#f43f5e" strokeWidth="3" strokeDasharray="6,6" strokeLinecap="round" />)}
+                    </svg>
+                    
+                    {config.labels.map((lbl, i) => {
+                        const isVisible = currentStep >= lbl.step;
+                        const isHidden = lbl.hideOnStep !== undefined && currentStep >= lbl.hideOnStep;
+                        if (!isVisible || isHidden) return null;
+                        
+                        return (
+                            <div key={`${i}-${lbl.step}`} className={`absolute math-label animate-fadeInScale ${lbl.className || 'text-slate-800 text-lg sm:text-2xl font-black'} whitespace-nowrap`} 
+                                 style={{ left: `${(lbl.x / 400) * 100}%`, top: `${(lbl.y / 300) * 100}%`, transform: 'translate(-50%, -50%)' }}>
+                                <MathDisplay inline latex={lbl.latex} />
+                            </div>
+                        );
+                    })}
+                </div>
+            );
+        });
+
+        const defaultStepsText = [
+            "Datos: Ubicamos la información inicial de lados y un ángulo.",
+            "Ángulos: Completamos el ángulo faltante para identificar el triángulo notable.",
+            "Ecuaciones: Igualamos los lados a sus proporciones correspondientes.",
+            "Despeje: Resolvemos la ecuación principal para hallar el valor de 'k'.",
+            "Solución: Reemplazamos 'k' para calcular el valor solicitado."
+        ];
+
+        const EXERCISES = [
+            { 
+                id: 1, title: "Ejercicio 1", subtitle: "Triángulo Notable 30°-60°", type: "30-60",
+                enunciado: () => <span>Triángulo ABC, recto en B. Si <MathDisplay inline latex="AB = 2\sqrt{3}" /> y <MathDisplay inline latex="m\angle BAC = 60^\circ" />, halle BC.</span>,
+                stepsText: defaultStepsText,
+                graphic: {
+                    points: "120,50 120,250 270,250",
+                    rightAngle: "120,230 140,230 140,250",
+                    arcs: ["M120,90 A40,40 0 0,0 145,78"],
+                    labels: [
+                        // Datos
+                        { step: 0, x: 80, y: 150, latex: "2\\sqrt{3}", hideOnStep: 2 },
+                        { step: 0, x: 195, y: 280, latex: "x", hideOnStep: 4 },
+                        { step: 0, x: 138, y: 100, latex: "60^\\circ", className: "text-rose-600 text-base sm:text-xl font-black" },
+                        
+                        // Ángulos
+                        { step: 1, x: 240, y: 230, latex: "30^\\circ", className: "text-rose-600 text-base sm:text-xl font-black" },
+                        
+                        // Ecuaciones
+                        { step: 2, x: 60, y: 150, latex: "2\\sqrt{3} = k", hideOnStep: 3, className: "text-indigo-700 text-xl font-black bg-white/90 px-2 rounded-lg shadow-sm" },
+                        { step: 2, x: 195, y: 280, latex: "x = k\\sqrt{3}", hideOnStep: 4, className: "text-indigo-700 text-xl font-black bg-white/90 px-2 rounded-lg shadow-sm" },
+                        { step: 2, x: 220, y: 130, latex: "2k", className: "text-indigo-700 text-xl font-black bg-white/90 px-2 rounded-lg shadow-sm" },
+                        
+                        // Despeje
+                        { step: 3, x: 60, y: 150, latex: "\\mathbf{k = 2\\sqrt{3}}", className: "text-amber-600 text-2xl font-black bg-amber-50 border-2 border-amber-300 px-3 py-1 shadow-md rounded-xl z-20" },
+                        
+                        // Solución
+                        { step: 4, x: 195, y: 280, latex: "\\therefore x = (2\\sqrt{3})\\sqrt{3} = 6", className: "text-rose-600 text-2xl sm:text-3xl font-black bg-white p-2 rounded-xl shadow-lg border-2 border-rose-300 z-20" }
+                    ]
+                }
+            },
+            { 
+                id: 2, title: "Ejercicio 2", subtitle: "Triángulo Notable 45°-45°", type: "45-45",
+                enunciado: () => <span>Triángulo ABC, recto en B. Si <MathDisplay inline latex="m\angle BAC = 45^\circ" /> y <MathDisplay inline latex="BC = 7" />, halle AC.</span>,
+                stepsText: defaultStepsText,
+                graphic: {
+                    points: "120,50 120,250 320,250",
+                    rightAngle: "120,230 140,230 140,250",
+                    arcs: ["M120,90 A40,40 0 0,0 148,78"],
+                    labels: [
+                        { step: 0, x: 220, y: 280, latex: "7", hideOnStep: 2 },
+                        { step: 0, x: 235, y: 135, latex: "x", hideOnStep: 4 },
+                        { step: 0, x: 145, y: 100, latex: "45^\\circ", className: "text-rose-600 text-base sm:text-xl font-black" },
+                        
+                        { step: 1, x: 280, y: 235, latex: "45^\\circ", className: "text-rose-600 text-base sm:text-xl font-black" },
+
+                        { step: 2, x: 220, y: 280, latex: "7 = k", hideOnStep: 3, className: "text-indigo-700 text-xl font-black bg-white/90 px-2 rounded-lg shadow-sm" },
+                        { step: 2, x: 80, y: 150, latex: "k", className: "text-indigo-700 text-xl font-black bg-white/90 px-2 rounded-lg shadow-sm" },
+                        { step: 2, x: 245, y: 135, latex: "x = k\\sqrt{2}", hideOnStep: 4, className: "text-indigo-700 text-xl font-black bg-white/90 px-2 rounded-lg shadow-sm" },
+                        
+                        { step: 3, x: 220, y: 280, latex: "\\mathbf{k = 7}", className: "text-amber-600 text-2xl font-black bg-amber-50 border-2 border-amber-300 px-3 py-1 shadow-md rounded-xl z-20" },
+                        
+                        { step: 4, x: 260, y: 130, latex: "\\therefore AC = 7\\sqrt{2}", className: "text-rose-600 text-2xl sm:text-3xl font-black bg-white p-2 rounded-xl shadow-lg border-2 border-rose-300 z-20" }
+                    ]
+                }
+            },
+            { 
+                id: 3, title: "Ejercicio 3", subtitle: "Triángulo Notable 37°-53°", type: "37-53",
+                enunciado: () => <span>La hipotenusa de un triángulo rectángulo es 10m y un ángulo agudo mide <MathDisplay inline latex="53^\circ" />. Halle la longitud del cateto menor.</span>,
+                stepsText: defaultStepsText,
+                graphic: {
+                    points: "120,50 120,250 270,250",
+                    rightAngle: "120,230 140,230 140,250",
+                    arcs: ["M120,90 A40,40 0 0,0 145,78"],
+                    labels: [
+                        { step: 0, x: 215, y: 135, latex: "10", hideOnStep: 2 },
+                        { step: 0, x: 138, y: 100, latex: "53^\\circ", className: "text-rose-600 text-base sm:text-xl font-black" },
+                        { step: 0, x: 80, y: 150, latex: "x", hideOnStep: 4 }, 
+                        
+                        { step: 1, x: 240, y: 235, latex: "37^\\circ", className: "text-rose-600 text-base sm:text-xl font-black" },
+
+                        { step: 2, x: 220, y: 135, latex: "10 = 5k", hideOnStep: 3, className: "text-indigo-700 text-xl font-black bg-white/90 px-2 rounded-lg shadow-sm" },
+                        { step: 2, x: 80, y: 150, latex: "x = 3k", hideOnStep: 4, className: "text-indigo-700 text-xl font-black bg-white/90 px-2 rounded-lg shadow-sm" },
+                        { step: 2, x: 195, y: 280, latex: "4k", className: "text-indigo-700 text-xl font-black bg-white/90 px-2 rounded-lg shadow-sm" },
+                        
+                        { step: 3, x: 270, y: 100, latex: "\\mathbf{k = 2}", className: "text-amber-600 text-2xl font-black bg-amber-50 border-2 border-amber-300 px-3 py-1 shadow-md rounded-xl z-20" },
+                        
+                        { step: 4, x: 80, y: 150, latex: "\\therefore x = 3(2) = 6", className: "text-rose-600 text-2xl sm:text-3xl font-black bg-white p-2 rounded-xl shadow-lg border-2 border-rose-300 z-20" }
+                    ]
+                }
+            },
+            { 
+                id: 4, title: "Ejercicio 4", subtitle: "Aplicación 30°-60°", type: "30-60",
+                enunciado: () => <span>Triángulo ABC, recto en B. Si <MathDisplay inline latex="m\angle BAC=60^\circ" /> y <MathDisplay inline latex="AB=4\sqrt{3}" />, halle BC.</span>,
+                stepsText: defaultStepsText,
+                graphic: {
+                    points: "120,50 120,250 250,250",
+                    rightAngle: "120,230 140,230 140,250",
+                    arcs: ["M120,90 A40,40 0 0,0 142,75"],
+                    labels: [
+                        { step: 0, x: 80, y: 150, latex: "4\\sqrt{3}", hideOnStep: 2 },
+                        { step: 0, x: 185, y: 280, latex: "x", hideOnStep: 4 },
+                        { step: 0, x: 135, y: 100, latex: "60^\\circ", className: "text-rose-600 text-base sm:text-xl font-black" },
+                        
+                        { step: 1, x: 220, y: 235, latex: "30^\\circ", className: "text-rose-600 text-base sm:text-xl font-black" },
+
+                        { step: 2, x: 75, y: 150, latex: "4\\sqrt{3} = k", hideOnStep: 3, className: "text-indigo-700 text-xl font-black bg-white/90 px-2 rounded-lg shadow-sm" },
+                        { step: 2, x: 185, y: 280, latex: "x = k\\sqrt{3}", hideOnStep: 4, className: "text-indigo-700 text-xl font-black bg-white/90 px-2 rounded-lg shadow-sm" },
+                        { step: 2, x: 190, y: 130, latex: "2k", className: "text-indigo-700 text-xl font-black bg-white/90 px-2 rounded-lg shadow-sm" },
+                        
+                        { step: 3, x: 75, y: 150, latex: "\\mathbf{k = 4\\sqrt{3}}", className: "text-amber-600 text-2xl font-black bg-amber-50 border-2 border-amber-300 px-3 py-1 shadow-md rounded-xl z-20" },
+                        
+                        { step: 4, x: 220, y: 280, latex: "\\therefore BC = (4\\sqrt{3})\\sqrt{3} = 12", className: "text-rose-600 text-2xl sm:text-3xl font-black bg-white p-2 rounded-xl shadow-lg border-2 border-rose-300 z-20" }
+                    ]
+                }
+            },
+            { 
+                id: 5, title: "Ejercicio 5", subtitle: "Ecuación en Triángulo", type: "45-45",
+                enunciado: () => <span>Triángulo ABC, recto en B. <MathDisplay inline latex="m\angle BAC=45^\circ" />, <MathDisplay inline latex="AB = 5x+2" />, <MathDisplay inline latex="AC = 12\sqrt{2}" />. Halle x.</span>,
+                stepsText: defaultStepsText,
+                graphic: {
+                    points: "120,50 120,250 320,250",
+                    rightAngle: "120,230 140,230 140,250",
+                    arcs: ["M120,90 A40,40 0 0,0 148,78"],
+                    labels: [
+                        { step: 0, x: 60, y: 150, latex: "5x+2", hideOnStep: 2 },
+                        { step: 0, x: 235, y: 135, latex: "12\\sqrt{2}", hideOnStep: 2 },
+                        { step: 0, x: 145, y: 100, latex: "45^\\circ", className: "text-rose-600 text-base sm:text-xl font-black" },
+                        
+                        { step: 1, x: 280, y: 235, latex: "45^\\circ", className: "text-rose-600 text-base sm:text-xl font-black" },
+
+                        { step: 2, x: 60, y: 150, latex: "5x+2 = k", hideOnStep: 4, className: "text-indigo-700 text-xl font-black bg-white/90 px-2 rounded-lg shadow-sm" },
+                        { step: 2, x: 245, y: 135, latex: "12\\sqrt{2} = k\\sqrt{2}", hideOnStep: 3, className: "text-indigo-700 text-xl font-black bg-white/90 px-2 rounded-lg shadow-sm" },
+                        
+                        { step: 3, x: 280, y: 100, latex: "\\mathbf{k = 12}", className: "text-amber-600 text-2xl font-black bg-amber-50 border-2 border-amber-300 px-3 py-1 shadow-md rounded-xl z-20" },
+                        
+                        { step: 4, x: 120, y: 150, latex: "12 = 5x+2 \\Rightarrow x = 2", className: "text-rose-600 text-2xl sm:text-3xl font-black bg-white p-2 rounded-xl shadow-lg border-2 border-rose-300 z-20" }
+                    ]
+                }
+            },
+            { 
+                id: 6, title: "Ejercicio 6", subtitle: "Perímetro Escuadra", type: "37-53",
+                enunciado: () => <span>Calcule el perímetro de una escuadra cuyo ángulo es <MathDisplay inline latex="37^\circ" /> y su cateto adyacente mide 12 cm.</span>,
+                stepsText: defaultStepsText,
+                graphic: {
+                    points: "120,100 120,250 320,250",
+                    rightAngle: "120,230 140,230 140,250",
+                    arcs: ["M285,250 A35,35 0 0,1 292,223"],
+                    labels: [
+                        { step: 0, x: 220, y: 280, latex: "12", hideOnStep: 2 },
+                        { step: 0, x: 275, y: 235, latex: "37^\\circ", className: "text-rose-600 text-base sm:text-xl font-black" },
+                        
+                        { step: 1, x: 145, y: 125, latex: "53^\\circ", className: "text-rose-600 text-base sm:text-xl font-black" },
+
+                        { step: 2, x: 220, y: 280, latex: "12 = 4k", hideOnStep: 3, className: "text-indigo-700 text-xl font-black bg-white/90 px-2 rounded-lg shadow-sm" },
+                        { step: 2, x: 80, y: 175, latex: "3k", hideOnStep: 4, className: "text-indigo-700 text-xl font-black bg-white/90 px-2 rounded-lg shadow-sm" },
+                        { step: 2, x: 235, y: 155, latex: "5k", hideOnStep: 4, className: "text-indigo-700 text-xl font-black bg-white/90 px-2 rounded-lg shadow-sm" },
+                        
+                        { step: 3, x: 220, y: 280, latex: "\\mathbf{k = 3}", className: "text-amber-600 text-2xl font-black bg-amber-50 border-2 border-amber-300 px-3 py-1 shadow-md rounded-xl z-20" },
+                        
+                        { step: 4, x: 220, y: 280, latex: "12", className: "text-rose-600 text-xl font-black bg-white px-2 rounded-lg shadow-sm z-10" },
+                        { step: 4, x: 80, y: 175, latex: "9", className: "text-rose-600 text-xl font-black bg-white px-2 rounded-lg shadow-sm z-10" },
+                        { step: 4, x: 235, y: 155, latex: "15", className: "text-rose-600 text-xl font-black bg-white px-2 rounded-lg shadow-sm z-10" },
+                        { step: 4, x: 220, y: 50, latex: "\\text{Perím} = 9+12+15 = 36", className: "text-rose-600 text-2xl sm:text-3xl font-black bg-white p-2 rounded-xl shadow-lg border-2 border-rose-300 z-30" }
+                    ]
+                }
+            },
+            { 
+                id: 7, title: "Ejercicio 7", subtitle: "Problema de Desplazamiento", type: "37-53",
+                enunciado: () => <span>Escalera de 5m apoyada en una pared (ángulo pared-escalera <MathDisplay inline latex="37^\circ" />). Si la parte superior resbala 1m, ¿cuánto resbala la base?</span>,
+                stepsText: defaultStepsText,
+                graphic: {
+                    points: "120,50 120,250 270,250",
+                    rightAngle: "120,230 140,230 140,250",
+                    arcs: ["M120,90 A40,40 0 0,0 145,78"],
+                    lines: [[120, 100, 320, 250]],
+                    labels: [
+                        { step: 0, x: 215, y: 135, latex: "5", hideOnStep: 2 },
+                        { step: 0, x: 138, y: 100, latex: "37^\\circ", className: "text-rose-600 text-base sm:text-xl font-black" },
+                        
+                        { step: 1, x: 240, y: 235, latex: "53^\\circ", className: "text-rose-600 text-base sm:text-xl font-black" },
+
+                        { step: 2, x: 225, y: 135, latex: "5 = 5k", hideOnStep: 3, className: "text-indigo-700 text-xl font-black bg-white/90 px-2 rounded-lg shadow-sm" },
+                        { step: 2, x: 80, y: 150, latex: "4k", hideOnStep: 4, className: "text-indigo-700 text-xl font-black bg-white/90 px-2 rounded-lg shadow-sm" },
+                        { step: 2, x: 195, y: 280, latex: "3k", hideOnStep: 4, className: "text-indigo-700 text-xl font-black bg-white/90 px-2 rounded-lg shadow-sm" },
+                        
+                        { step: 3, x: 280, y: 100, latex: "\\mathbf{k = 1}", className: "text-amber-600 text-2xl font-black bg-amber-50 border-2 border-amber-300 px-3 py-1 shadow-md rounded-xl z-20" },
+                        
+                        { step: 4, x: 80, y: 150, latex: "h_{nueva} = 3m", className: "text-purple-600 text-xl font-black bg-white p-1 shadow-md border border-purple-200 rounded-lg z-20" },
+                        { step: 4, x: 240, y: 160, latex: "5m", className: "text-slate-500 text-lg font-black bg-white/80 px-1 rounded transform rotate-35 z-20" },
+                        { step: 4, x: 220, y: 280, latex: "\\Delta = 4 - 3 = 1m", className: "text-rose-600 text-2xl sm:text-3xl font-black bg-white p-2 rounded-xl shadow-lg border-2 border-rose-300 z-30" }
+                    ]
+                }
+            },
+            { 
+                id: 8, title: "Ejercicio 8", subtitle: "Segmento Horizontal", type: "30-60",
+                enunciado: () => <span>Triángulo ABC, recto en B. <MathDisplay inline latex="AC = 14" />, <MathDisplay inline latex="m\angle ACB = 30^\circ" />. Halle BC.</span>,
+                stepsText: defaultStepsText,
+                graphic: {
+                    points: "120,100 120,250 380,250",
+                    rightAngle: "120,230 140,230 140,250",
+                    arcs: ["M335,250 A45,45 0 0,1 345,230"],
+                    labels: [
+                        { step: 0, x: 260, y: 155, latex: "14", hideOnStep: 2 },
+                        { step: 0, x: 250, y: 280, latex: "x", hideOnStep: 4 },
+                        { step: 0, x: 315, y: 235, latex: "30^\\circ", className: "text-rose-600 text-base sm:text-xl font-black" },
+                        
+                        { step: 1, x: 145, y: 125, latex: "60^\\circ", className: "text-rose-600 text-base sm:text-xl font-black" },
+
+                        { step: 2, x: 270, y: 155, latex: "14 = 2k", hideOnStep: 3, className: "text-indigo-700 text-xl font-black bg-white/90 px-2 rounded-lg shadow-sm" },
+                        { step: 2, x: 250, y: 280, latex: "x = k\\sqrt{3}", hideOnStep: 4, className: "text-indigo-700 text-xl font-black bg-white/90 px-2 rounded-lg shadow-sm" },
+                        { step: 2, x: 90, y: 175, latex: "k", className: "text-indigo-700 text-xl font-black bg-white/90 px-2 rounded-lg shadow-sm" },
+                        
+                        { step: 3, x: 270, y: 155, latex: "\\mathbf{k = 7}", className: "text-amber-600 text-2xl font-black bg-amber-50 border-2 border-amber-300 px-3 py-1 shadow-md rounded-xl z-20" },
+                        
+                        { step: 4, x: 250, y: 280, latex: "\\therefore BC = 7\\sqrt{3}", className: "text-rose-600 text-2xl sm:text-3xl font-black bg-white p-2 rounded-xl shadow-lg border-2 border-rose-300 z-20" }
+                    ]
+                }
+            },
+            { 
+                id: 9, title: "Ejercicio 9", subtitle: "Catetos Iguales", type: "45-45",
+                enunciado: () => <span>Triángulo ABC, recto en A. <MathDisplay inline latex="m\angle ABC = 45^\circ" />, <MathDisplay inline latex="BC = 11\sqrt{2}" />. Halle AB.</span>,
+                stepsText: defaultStepsText,
+                graphic: {
+                    points: "120,250 120,50 320,250", 
+                    rightAngle: "120,230 140,230 140,250",
+                    arcs: ["M120,90 A40,40 0 0,0 148,78"],
+                    labels: [
+                        { step: 0, x: 235, y: 135, latex: "11\\sqrt{2}", hideOnStep: 2 },
+                        { step: 0, x: 80, y: 150, latex: "x", hideOnStep: 4 },
+                        { step: 0, x: 145, y: 100, latex: "45^\\circ", className: "text-rose-600 text-base sm:text-xl font-black" },
+                        { step: 0, x: 100, y: 255, latex: "A", className: "text-slate-500 font-bold" },
+                        
+                        { step: 1, x: 280, y: 235, latex: "45^\\circ", className: "text-rose-600 text-base sm:text-xl font-black" },
+
+                        { step: 2, x: 245, y: 135, latex: "11\\sqrt{2} = k\\sqrt{2}", hideOnStep: 3, className: "text-indigo-700 text-xl font-black bg-white/90 px-2 rounded-lg shadow-sm" },
+                        { step: 2, x: 80, y: 150, latex: "x = k", hideOnStep: 4, className: "text-indigo-700 text-xl font-black bg-white/90 px-2 rounded-lg shadow-sm" },
+                        { step: 2, x: 220, y: 280, latex: "k", className: "text-indigo-700 text-xl font-black bg-white/90 px-2 rounded-lg shadow-sm" },
+                        
+                        { step: 3, x: 300, y: 100, latex: "\\mathbf{k = 11}", className: "text-amber-600 text-2xl font-black bg-amber-50 border-2 border-amber-300 px-3 py-1 shadow-md rounded-xl z-20" },
+                        
+                        { step: 4, x: 120, y: 150, latex: "\\therefore AB = 11", className: "text-rose-600 text-2xl sm:text-3xl font-black bg-white p-2 rounded-xl shadow-lg border-2 border-rose-300 z-20" }
+                    ]
+                }
+            },
+            { 
+                id: 10, title: "Ejercicio 10", subtitle: "Razón de Catetos", type: "37-53",
+                enunciado: () => <span>Determine la hipotenusa de un triángulo rectángulo si su cateto mayor mide 12 y el menor ángulo mide <MathDisplay inline latex="37^\circ" />.</span>,
+                stepsText: defaultStepsText,
+                graphic: {
+                    points: "120,100 120,250 320,250",
+                    rightAngle: "120,230 140,230 140,250",
+                    arcs: ["M285,250 A35,35 0 0,1 292,223"],
+                    labels: [
+                        { step: 0, x: 220, y: 280, latex: "12", hideOnStep: 2 },
+                        { step: 0, x: 275, y: 235, latex: "37^\\circ", className: "text-rose-600 text-base sm:text-xl font-black" },
+                        { step: 0, x: 235, y: 155, latex: "x", hideOnStep: 4 },
+                        
+                        { step: 1, x: 145, y: 125, latex: "53^\\circ", className: "text-rose-600 text-base sm:text-xl font-black" },
+
+                        { step: 2, x: 220, y: 280, latex: "12 = 4k", hideOnStep: 3, className: "text-indigo-700 text-xl font-black bg-white/90 px-2 rounded-lg shadow-sm" },
+                        { step: 2, x: 245, y: 155, latex: "x = 5k", hideOnStep: 4, className: "text-indigo-700 text-xl font-black bg-white/90 px-2 rounded-lg shadow-sm" },
+                        { step: 2, x: 80, y: 175, latex: "3k", className: "text-indigo-700 text-xl font-black bg-white/90 px-2 rounded-lg shadow-sm" },
+                        
+                        { step: 3, x: 220, y: 280, latex: "\\mathbf{k = 3}", className: "text-amber-600 text-2xl font-black bg-amber-50 border-2 border-amber-300 px-3 py-1 shadow-md rounded-xl z-20" },
+                        
+                        { step: 4, x: 260, y: 140, latex: "\\text{Hip} = 5(3) = 15", className: "text-rose-600 text-2xl sm:text-3xl font-black bg-white p-2 rounded-xl shadow-lg border-2 border-rose-300 z-20" }
+                    ]
+                }
+            },
+            { 
+                id: 11, title: "Ejercicio 11", subtitle: "Letras Distintas", type: "30-60",
+                enunciado: () => <span>Triángulo PQR, recto en R. <MathDisplay inline latex="m\angle PQR = 60^\circ" />, <MathDisplay inline latex="PR = 5\sqrt{3}" />. Halle PQ.</span>,
+                stepsText: defaultStepsText,
+                graphic: {
+                    points: "120,50 120,250 250,250",
+                    rightAngle: "120,230 140,230 140,250",
+                    arcs: ["M120,90 A40,40 0 0,0 142,75"],
+                    labels: [
+                        { step: 0, x: 185, y: 280, latex: "5\\sqrt{3}", hideOnStep: 2 },
+                        { step: 0, x: 200, y: 140, latex: "x", hideOnStep: 4 },
+                        { step: 0, x: 135, y: 100, latex: "60^\\circ", className: "text-rose-600 text-base sm:text-xl font-black" },
+                        { step: 0, x: 120, y: 25, latex: "Q", className: "text-slate-500 font-bold" },
+                        { step: 0, x: 100, y: 255, latex: "R", className: "text-slate-500 font-bold" },
+                        { step: 0, x: 265, y: 255, latex: "P", className: "text-slate-500 font-bold" },
+                        
+                        { step: 1, x: 220, y: 235, latex: "30^\\circ", className: "text-rose-600 text-base sm:text-xl font-black" },
+
+                        { step: 2, x: 185, y: 280, latex: "5\\sqrt{3} = k\\sqrt{3}", hideOnStep: 3, className: "text-indigo-700 text-xl font-black bg-white/90 px-2 rounded-lg shadow-sm" },
+                        { step: 2, x: 210, y: 140, latex: "x = 2k", hideOnStep: 4, className: "text-indigo-700 text-xl font-black bg-white/90 px-2 rounded-lg shadow-sm" },
+                        { step: 2, x: 80, y: 150, latex: "k", className: "text-indigo-700 text-xl font-black bg-white/90 px-2 rounded-lg shadow-sm" },
+                        
+                        { step: 3, x: 185, y: 280, latex: "\\mathbf{k = 5}", className: "text-amber-600 text-2xl font-black bg-amber-50 border-2 border-amber-300 px-3 py-1 shadow-md rounded-xl z-20" },
+                        
+                        { step: 4, x: 240, y: 140, latex: "\\therefore PQ = 10", className: "text-rose-600 text-2xl sm:text-3xl font-black bg-white p-2 rounded-xl shadow-lg border-2 border-rose-300 z-20" }
+                    ]
+                }
+            },
+            { 
+                id: 12, title: "Ejercicio 12", subtitle: "Identidad Algebraica", type: "45-45",
+                enunciado: () => <span>Triángulo ABC, recto en B. <MathDisplay inline latex="m\angle BCA = 45^\circ" />, <MathDisplay inline latex="AC = 11\sqrt{2}" />, <MathDisplay inline latex="BC = 4x+3" />. Halle x.</span>,
+                stepsText: defaultStepsText,
+                graphic: {
+                    points: "120,50 120,250 320,250",
+                    rightAngle: "120,230 140,230 140,250",
+                    arcs: ["M285,250 A35,35 0 0,1 292,223"],
+                    labels: [
+                        { step: 0, x: 235, y: 135, latex: "11\\sqrt{2}", hideOnStep: 2 },
+                        { step: 0, x: 220, y: 280, latex: "4x+3", hideOnStep: 4 },
+                        { step: 0, x: 275, y: 235, latex: "45^\\circ", className: "text-rose-600 text-base sm:text-xl font-black" },
+                        
+                        { step: 1, x: 145, y: 100, latex: "45^\\circ", className: "text-rose-600 text-base sm:text-xl font-black" },
+
+                        { step: 2, x: 245, y: 135, latex: "11\\sqrt{2} = k\\sqrt{2}", hideOnStep: 3, className: "text-indigo-700 text-xl font-black bg-white/90 px-2 rounded-lg shadow-sm" },
+                        { step: 2, x: 220, y: 280, latex: "4x+3 = k", hideOnStep: 4, className: "text-indigo-700 text-xl font-black bg-white/90 px-2 rounded-lg shadow-sm" },
+                        { step: 2, x: 80, y: 150, latex: "k", className: "text-indigo-700 text-xl font-black bg-white/90 px-2 rounded-lg shadow-sm" },
+                        
+                        { step: 3, x: 280, y: 100, latex: "\\mathbf{k = 11}", className: "text-amber-600 text-2xl font-black bg-amber-50 border-2 border-amber-300 px-3 py-1 shadow-md rounded-xl z-20" },
+                        
+                        { step: 4, x: 220, y: 280, latex: "11 = 4x+3 \\Rightarrow x = 2", className: "text-rose-600 text-2xl sm:text-3xl font-black bg-white p-2 rounded-xl shadow-lg border-2 border-rose-300 z-20" }
+                    ]
+                }
+            }
+        ];
+
+        function App() {
+            const [exIdx, setExIdx] = useState(0);
+            const [step, setStep] = useState(0);
+            const [isMuted, setIsMuted] = useState(false);
+            
+            const curEx = EXERCISES[exIdx];
+            const maxSteps = curEx.stepsText.length - 1;
+
+            const startExercise = (index) => {
+                AudioController.init();
+                AudioController.play('pop');
+                setExIdx(index);
+                setStep(0);
+            };
+
+            const nextStep = () => {
+                AudioController.init();
+                if (step < maxSteps) {
+                    AudioController.play('pop');
+                    setStep(step + 1);
+                } else if (step === maxSteps) {
+                    AudioController.play('success');
+                }
+            };
+
+            const prevStep = () => {
+                AudioController.init();
+                if (step > 0) {
+                    AudioController.play('pop-reverse');
+                    setStep(step - 1);
+                }
+            };
+
+            const toggleMute = () => { AudioController.init(); setIsMuted(AudioController.toggleMute()); };
+
+            return (
+                <div className="w-screen h-[100dvh] bg-gradient-to-br from-[#0f172a] via-[#312e81] to-[#831843] text-slate-800 flex flex-col p-2 sm:p-4 relative font-fun overflow-hidden">
+                    
+                    <div className="absolute inset-0 overflow-hidden pointer-events-none z-0 opacity-20">
+                        {['<', '>', '±', '√', 'x', 'y', '∞', '+', '-'].map((sym, i) => (
+                            <div key={i} className="absolute text-white font-black animate-floatUp select-none" style={{ left: `${Math.random()*100}%`, bottom: '-15%', fontSize: `${1+Math.random()*3}rem`, animationDuration: `${10+Math.random()*15}s`, animationDelay: `-${Math.random()*20}s` }}>{sym}</div>
+                        ))}
+                    </div>
+                    
+                    {step === maxSteps && (
+                        <div className="absolute inset-0 pointer-events-none z-50 flex items-center justify-center overflow-hidden">
+                            {Array.from({length:60}).map((_, i) => (
+                                <div key={i} className="absolute w-3 h-3 sm:w-4 sm:h-4 rounded-full animate-confettiExplosion" style={{ backgroundColor: ['#fde047', '#60a5fa', '#f472b6', '#34d399'][i%4], '--tx': `${(Math.random()-0.5)*800}px`, '--ty': `${(Math.random()-1)*800}px`, '--rot': `${Math.random()*720}deg`, left: '50%', top: '50%' }} />
+                            ))}
+                        </div>
+                    )}
+
+                    <div className="shrink-0 relative z-10 w-[96%] max-w-[1400px] mx-auto flex justify-between items-center mb-3 px-1">
+                        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-xl border-2 border-yellow-300 bg-white/15 backdrop-blur-md text-yellow-300 font-black tracking-wider shadow-md text-sm sm:text-base">
+                            <Rocket className="w-5 h-5 text-yellow-300" /> TuProfe20 Lab
+                        </div>
+
+                        <div className="flex items-center gap-1.5 sm:gap-2 bg-black/30 p-1.5 sm:p-2 rounded-xl border-2 border-white/20 backdrop-blur-md shadow-lg overflow-x-auto scrollbar-hide max-w-[50vw]">
+                            {EXERCISES.map((ex, i) => (
+                                <button key={ex.id} onClick={() => startExercise(i)} className={`shrink-0 w-8 h-8 sm:w-11 sm:h-11 rounded-lg font-black text-sm sm:text-base transition-all ${exIdx === i ? 'bg-yellow-400 text-slate-900 scale-110 shadow-[0_0_15px_rgba(250,204,21,0.6)]' : 'text-white hover:bg-white/20'}`}>
+                                    {ex.id}
+                                </button>
+                            ))}
+                        </div>
+
+                        <button onClick={toggleMute} className="p-2 sm:p-3 rounded-xl bg-white/10 border-2 border-white/30 text-white hover:bg-white/20 transition-all shadow-lg">
+                            {isMuted ? <VolumeX className="w-5 h-5 sm:w-6 sm:h-6" /> : <Volume2 className="w-5 h-5 sm:w-6 sm:h-6" />}
+                        </button>
+                    </div>
+
+                    <div className="flex-1 min-h-0 relative z-10 w-[96%] max-w-[1400px] mx-auto bg-slate-50 rounded-[2rem] border-[6px] border-slate-100 shadow-[0_30px_60px_rgba(0,0,0,0.5)] flex flex-col overflow-hidden">
+                        
+                        <div className="shrink-0 bg-slate-900 border-b-[4px] border-cyan-500 px-4 py-4 sm:px-6 flex flex-col justify-center relative shadow-md z-20">
+                            <div className="flex justify-between items-center w-full max-w-5xl mx-auto mb-2">
+                                <span className="bg-cyan-500 text-slate-900 font-black text-xs sm:text-sm px-3 py-1 rounded-md shadow-sm">
+                                    {curEx.title}
+                                </span>
+                                <span className="text-yellow-300 font-bold text-xs sm:text-sm bg-white/10 px-3 py-1 rounded-md">
+                                    {curEx.subtitle}
+                                </span>
+                            </div>
+                            <div className="flex flex-col items-center justify-center text-white font-bold text-lg sm:text-xl md:text-2xl text-center w-full max-w-5xl mx-auto leading-relaxed math-enunciado">
+                                {curEx.enunciado()}
+                            </div>
+                        </div>
+
+                        <div className="flex-1 flex flex-col md:flex-row bg-slate-50 relative overflow-hidden">
+                            
+                            {/* Left Panel: Recordatorio + Procedimiento */}
+                            <div className="w-full md:w-1/3 border-r-2 border-slate-200/50 p-4 flex flex-col bg-indigo-50/60 overflow-y-auto scrollbar-hide"
+                                 style={{ backgroundImage: 'linear-gradient(to right, rgba(0,0,0,0.1) 1px, transparent 1px), linear-gradient(to bottom, rgba(0,0,0,0.1) 1px, transparent 1px)', backgroundSize: '24px 24px' }}>
+                                <ReminderTriangle type={curEx.type} />
+                                
+                                <div className="mt-6 flex flex-col gap-4 relative">
+                                    <div className="absolute left-4 top-0 bottom-0 w-1 bg-slate-200 rounded-full z-0"></div>
+                                    {curEx.stepsText.map((text, idx) => (
+                                        <div key={idx} className={`relative z-10 flex gap-3 transition-all duration-300 ${idx <= step ? 'opacity-100 translate-x-0' : 'opacity-30 -translate-x-4'}`}>
+                                            <div className={`w-8 h-8 rounded-full shrink-0 flex items-center justify-center font-black text-sm border-2 shadow-sm ${idx === step ? 'bg-cyan-500 text-white border-cyan-600 scale-110' : idx < step ? 'bg-emerald-400 text-white border-emerald-500' : 'bg-slate-100 text-slate-400 border-slate-300'}`}>
+                                                {idx + 1}
+                                            </div>
+                                            <div className={`p-2 rounded-lg text-sm sm:text-base font-bold ${idx === step ? 'bg-cyan-50 text-slate-800 shadow-sm' : 'text-slate-500'}`}>
+                                                {text}
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+
+                            {/* Right Panel: Gráfico interactivo */}
+                            <div className="w-full md:w-2/3 bg-slate-50 flex flex-col items-center justify-center relative p-2 pointer-events-none">
+                                <h3 className="absolute top-4 left-4 font-black text-slate-400 uppercase tracking-widest text-xs flex items-center gap-1 z-20">
+                                    <Activity className="w-4 h-4 text-cyan-400"/> Zona Gráfica
+                                </h3>
+                                <TriangleGraphic config={curEx.graphic} currentStep={step} />
+                            </div>
+
+                            <DrawingCanvas />
+                        </div>
+
+                        <div className="shrink-0 bg-gradient-to-b from-[#e0e7ff] to-[#c7d2fe] p-2 sm:p-3 w-full flex flex-col items-center border-t-[4px] border-white z-40 relative">
+                            <div className="flex justify-center items-stretch w-full max-w-2xl gap-2 sm:gap-4 h-10 sm:h-12">
+                                <button onClick={prevStep} disabled={step === 0} className="flex-[1] bg-[#a5b4fc] border-b-[4px] border-[#6366f1] text-[#312e81] rounded-l-xl font-black text-sm sm:text-base flex items-center justify-center gap-1 active:border-b-0 active:translate-y-[4px] disabled:opacity-40 transition-all hover:bg-[#c7d2fe]">
+                                    <ChevronLeft className="w-5 h-5 stroke-[3px]" />
+                                    <span>Atrás</span>
+                                </button>
+                                
+                                <div className="bg-[#6366f1] text-white font-black px-4 sm:px-6 text-sm sm:text-base flex items-center justify-center border-b-[4px] border-[#4338ca] shadow-inner whitespace-nowrap">
+                                    Paso {step + 1} de {maxSteps + 1}
+                                </div>
+                                
+                                <button onClick={nextStep} disabled={step === maxSteps} className="flex-[2] border-b-[4px] text-white rounded-r-xl font-black text-sm sm:text-base flex items-center justify-center gap-1 active:border-b-0 active:translate-y-[4px] disabled:opacity-40 transition-all shadow-sm hover:brightness-110 bg-gradient-to-r from-[#06b6d4] to-[#0284c7] border-[#0369a1]">
+                                    <span>{step < maxSteps ? 'Siguiente Paso' : '¡Completado!'}</span>
+                                    {step < maxSteps && <ChevronRight className="w-5 h-5 stroke-[3px]" />}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
