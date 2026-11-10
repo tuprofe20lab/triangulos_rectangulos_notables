@@ -1,827 +1,143 @@
 <!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TuProfe20 Lab: Triángulos Rectángulos Notables</title>
-    
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
-    
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap');
-        
-        body { margin: 0; padding: 0; overflow: hidden; width: 100vw; height: 100dvh; user-select: none; }
-        .font-fun { font-family: 'Nunito', sans-serif; }
-        
-        @keyframes floatUp { 
-            0% { transform: translateY(105vh) rotate(0deg); } 
-            100% { transform: translateY(-105vh) rotate(360deg); } 
-        }
-        @keyframes fadeInScale {
-            0% { opacity: 0; transform: scale(0.9) translate(-50%, -50%); }
-            100% { opacity: 1; transform: scale(1) translate(-50%, -50%); }
-        }
-        @keyframes popIn {
-            0% { opacity: 0; transform: translate(-50%, -50%) scale(0.5); }
-            70% { opacity: 1; transform: translate(-50%, -50%) scale(1.1); }
-            100% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
-        }
-        @keyframes slideInRight { 
-            0% { opacity: 0; transform: translateX(15px); } 
-            100% { opacity: 1; transform: translateX(0); } 
-        }
-        @keyframes confettiExplosion { 
-            0% { transform: translate(0, 0) scale(1) rotate(0deg); opacity: 1; } 
-            100% { transform: translate(var(--tx), var(--ty)) scale(0) rotate(var(--rot)); opacity: 0; } 
-        }
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>TuProfe20 Lab | Triángulos Rectángulos Notables</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css"><script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script><style>
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&display=swap');
+:root{--blue:#1556dd;--ink:#18244c;--gold:#ffca35;--violet:#693deb;--cyan:#0ecbd2;--pink:#fa3e91}*{box-sizing:border-box}html,body{margin:0;height:100%;font-family:Nunito,system-ui,Arial,sans-serif;overflow:hidden}button,input{font:inherit}button{cursor:pointer}button:disabled{opacity:.36;cursor:default}.app{height:100dvh;display:flex;flex-direction:column;position:relative;overflow:hidden;background:linear-gradient(125deg,#09275d,#342384 53%,#a5197b);color:white}.ambient{position:absolute;inset:0;pointer-events:none;overflow:hidden}.ambient:before{content:'';position:absolute;inset:-30%;opacity:.17;background:repeating-radial-gradient(ellipse at 50% 50%,transparent 0 52px,#86faff 54px 56px,transparent 58px 100px);animation:wave 24s linear infinite}.ambient:after{content:'';position:absolute;inset:-20%;background:radial-gradient(circle at 22% 35%,#00ddff34,transparent 24%),radial-gradient(circle at 80% 65%,#ffa60022,transparent 24%);animation:drift 10s ease-in-out infinite alternate}@keyframes wave{to{transform:rotate(22deg) scale(1.12)}}@keyframes drift{to{transform:translate(4%,3%)}}@keyframes rise{from{transform:translateY(30px);opacity:0}to{transform:translateY(0);opacity:1}}@keyframes bob{50%{transform:translateY(-7px)}}@keyframes pop{50%{transform:scale(1.07)}}.symbols{position:absolute;inset:0;opacity:.15;font-weight:900;font-size:32px;display:flex;justify-content:space-around;align-items:center;pointer-events:none}.symbols span:nth-child(odd){animation:bob 4s infinite}.top{position:relative;z-index:4;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 18px;min-height:64px}.brand{font-weight:900;font-size:18px;color:#ffeb6c;white-space:nowrap}.top-actions{display:flex;gap:8px}.control,.pill{border:1px solid #ffffff65;border-radius:12px;padding:8px 13px;background:#ffffff1d;color:white;font-weight:900}.control:hover,.pill:hover{background:#ffffff3a}.home{position:relative;z-index:2;min-height:0;overflow:auto;padding:6px 24px 26px;width:min(1420px,100%);margin:auto}.intro{text-align:center;margin:2px 0 17px}.intro h1{font-size:clamp(30px,4.1vw,66px);line-height:1.09;margin:8px 0;color:#fff;text-shadow:0 6px 0 #110c4780}.intro h1 em{font-style:normal;color:#ffe046}.intro p{font-size:clamp(14px,1.35vw,19px);margin:6px}.tag{display:inline-block;background:#ffffff19;border:1px solid #a8fff8a1;padding:6px 18px;border-radius:40px;color:#a8fff8;font-weight:900;font-size:12px;letter-spacing:1px}.cards{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:14px}.challenge{min-height:175px;text-align:left;border:2px solid #ffffffa6;border-radius:22px;position:relative;overflow:hidden;padding:14px;color:#fff;box-shadow:0 9px 0 #08164065,0 18px 26px #0004;transition:transform .18s,filter .18s;animation:rise .45s both}.challenge:hover{transform:translateY(-5px);filter:brightness(1.1)}.challenge .num{background:#0003;border-radius:9px;padding:3px 9px;font-weight:900;font-size:12px}.challenge .ico{display:block;text-align:center;font-size:39px;margin:8px 0 3px;filter:drop-shadow(0 3px 2px #0006)}.challenge h3{margin:0;font-size:15px;line-height:1.3;text-align:center}.challenge small{display:block;font-size:11px;text-align:center;opacity:.9;margin-top:5px}.challenge .done{position:absolute;right:12px;top:12px;color:#1a304a;background:#ffe96d;border-radius:20px;padding:3px 7px;font-weight:900}.game{position:relative;z-index:3;flex:1;min-height:0;width:min(1530px,100%);align-self:center;display:flex;flex-direction:column;padding:0 12px 12px;gap:9px}.gamebar{display:flex;gap:7px;align-items:center;justify-content:center;flex-wrap:wrap}.smallbtn{background:#ffffff22;border:1px solid #ffffff5a;border-radius:10px;padding:5px 10px;color:white;font-weight:900}.smallbtn.active{background:#ffdf54;color:#12275b}.stage{position:relative;display:flex;gap:11px;flex:1;min-height:0}.panel{box-shadow:0 10px 25px #0003;border:3px solid #ffffffc7;border-radius:22px;overflow:hidden;display:flex;flex-direction:column;min-height:0}.left{width:47%;background:linear-gradient(180deg,#fff,#f2f7ff);color:#162c54}.right{width:53%;background:linear-gradient(145deg,#f7fdff,#e8edff);color:#183561}.heading{font-weight:900;text-transform:uppercase;letter-spacing:.5px;font-size:13px;padding:10px 15px;background:linear-gradient(90deg,#2458dd,#12b6dc);color:white;display:flex;justify-content:space-between;align-items:center}.heading .micro{font-size:11px;background:#ffffff2d;padding:4px 9px;border-radius:9px}.prompt{background:linear-gradient(100deg,#fff1a3,#ffd2af);border-bottom:2px solid #ffd979;padding:12px 15px;font-size:clamp(14px,1.3vw,18px);font-weight:900;line-height:1.32}.prompt b{color:#7624bc}.explain{display:flex;flex-direction:column;padding:12px;gap:8px;flex:1;min-height:0;overflow:auto}.robotbox{display:flex;align-items:center;gap:11px;background:#e9f5ff;border:2px solid #b7ddff;border-radius:16px;padding:8px 12px;flex-shrink:0}.robot{font-size:48px;line-height:1;animation:bob 2.8s ease-in-out infinite}.speech{font-weight:800;font-size:clamp(12px,1vw,15px);line-height:1.3;color:#2150a4}.step-list{display:flex;flex-direction:column;gap:5px}.step{display:flex;gap:9px;align-items:flex-start;border-radius:12px;padding:7px 10px;background:#eef3ff;color:#567093;font-size:clamp(12px,.95vw,15px);font-weight:800;line-height:1.28}.step b{border-radius:10px;background:#c5d1eb;min-width:25px;text-align:center;padding:3px}.step.current{border:2px solid #8062f1;background:linear-gradient(90deg,#e2f4ff,#f2e8ff);color:#252f79;box-shadow:0 2px 9px #6f62fb33}.step.current b{background:#6544ea;color:white}.step.past{background:#e5faed;color:#196848}.step.past b{background:#3cba80;color:white}.step.future{opacity:.45}.formula{margin-top:auto;background:#fff9dd;border:2px dashed #e6bf38;padding:8px 12px;border-radius:13px;font-weight:900;font-size:clamp(15px,1.45vw,21px);color:#1c438c;min-height:44px}.viz{flex:1;min-height:0;display:flex;align-items:center;justify-content:center;padding:0 8px;position:relative;background-image:radial-gradient(#7897c533 1px,transparent 1px);background-size:20px 20px}.tri-svg{height:min(100%,440px);width:min(100%,650px);overflow:visible}.sidelabel{font:900 21px Nunito,Arial,sans-serif;fill:#1d3d86;paint-order:stroke;stroke:#fff;stroke-width:6;stroke-linejoin:round}.anglelabel{font:900 19px Nunito,Arial,sans-serif;fill:#bc166c;paint-order:stroke;stroke:#fff;stroke-width:4}.vertex{font:900 19px Nunito,Arial,sans-serif;fill:#334a71}.highlight-side{stroke:#ffb51a!important;stroke-width:8!important;filter:drop-shadow(0 0 4px #f4b52a)}.tri-part{cursor:pointer;transition:opacity .2s}.tri-part:hover{opacity:.75}.legend{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;padding:6px;background:#ffffff9e;font-size:11px;font-weight:900}.legend span{border-radius:9px;padding:5px 9px;background:#edf2ff;color:#4050a0}.answer{display:flex;align-items:center;gap:8px;justify-content:center;padding:8px 10px;border-top:2px solid #bed5fa;background:#f7fcff;flex-wrap:wrap}.answer label{font-weight:900;font-size:14px;color:#304488}.answer input{width:min(200px,32vw);min-width:110px;border:2px solid #90b7f0;padding:9px;border-radius:10px;background:#fff;color:#16294a;font-size:18px;font-weight:900;text-align:center}.btn{border:0;border-radius:11px;padding:9px 15px;font-weight:900;color:white;background:linear-gradient(105deg,#3f63e9,#15b7ce);box-shadow:0 4px 0 #154c99}.btn:active{transform:translateY(2px);box-shadow:0 2px 0 #154c99}.btn.aux{background:#fff;color:#32438f;border:2px solid #c6cfff;box-shadow:none}.feedback{font-size:12px;font-weight:900;min-width:135px}.foot{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-shrink:0}.foot .btn{min-width:150px}.progress{font-size:14px;font-weight:900;color:#ffe872;background:#0004;padding:7px 15px;border-radius:12px}.tools{position:absolute;right:9px;top:9px;z-index:16;display:flex;gap:5px;align-items:center;flex-wrap:wrap;justify-content:flex-end;background:#ffffffed;border:2px solid #c6d3ee;border-radius:12px;padding:5px;max-width:65%}.tool{border:1px solid #cad4e8;border-radius:9px;padding:6px 9px;background:white;color:#324476;font-weight:900;font-size:12px}.tool.active{background:#3e54d9;color:#fff}.swatch{width:23px;height:23px;border:3px solid #fff;border-radius:50%;box-shadow:0 0 0 1px #9daac5}.swatch.selected{outline:2px solid #1d2c6e}.drawing-layer{position:absolute;inset:0;width:100%;height:100%;z-index:12;touch-action:none}.toolbar-wrap{position:absolute;inset:0;pointer-events:none;z-index:15}.toolbar-wrap>*{pointer-events:auto}.guide{position:absolute;bottom:12px;right:15px;background:#ffd93f;color:#34316f;border-radius:30px;padding:6px 12px;font-size:12px;font-weight:900;z-index:11}.detail{font-size:12px;color:#5b7092;text-align:center;padding:6px}.hidden{display:none!important}@media(max-width:900px){html,body{overflow:auto}.app{min-height:100dvh;height:auto;overflow:auto}.cards{grid-template-columns:repeat(2,minmax(0,1fr))}.game{height:auto;min-height:calc(100dvh - 65px)}.stage{flex-direction:column}.left,.right{width:100%;min-height:350px}.right{height:500px}.tools{max-width:95%;top:6px}.home{overflow:visible}.challenge{min-height:145px}.tri-svg{max-height:380px}}@media(min-width:901px) and (max-height:720px){.top{min-height:48px;padding:5px 14px}.prompt{padding:7px 12px;font-size:14px}.heading{padding:7px 12px}.explain{padding:7px;gap:5px}.robot{font-size:34px}.robotbox{padding:5px}.step{padding:4px 7px;font-size:12px}.formula{padding:5px;font-size:16px}.game{gap:5px;padding-bottom:6px}.answer{padding:4px}.legend{padding:3px}.home .challenge{min-height:130px}.intro h1{font-size:40px}}
 
-        .scrollbar-hide::-webkit-scrollbar { display: none; }
-        .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+/* Tipografía matemática: fórmulas reales en KaTeX, incluidas etiquetas SVG. */
+.math-part .katex,.side-math .katex,.angle-math .katex,.memory-panel .katex{font-weight:800!important}
+.math-part{display:inline-block;vertical-align:middle;white-space:nowrap;margin:0 2px}
+.formula .katex{font-size:clamp(15px,1.55vw,22px)}
+.step .katex,.prompt .katex{font-size:1.03em}
+.side-fo{overflow:visible;pointer-events:none}
+.side-math{display:inline-flex;align-items:center;justify-content:center;white-space:nowrap;font-weight:900;border:2px solid #b3cbff;border-radius:12px;padding:7px 10px;min-width:60px;box-shadow:0 6px 14px #203b7d30;background:#fff;color:#204bbb;font-size:clamp(14px,1.52vw,21px);animation:revealSide .35s ease both;line-height:1.15}
+.side-math.current{border-color:#f6ba3b;background:#fff1bf;color:#a04400;box-shadow:0 5px 18px #efa13b70}
+.side-math.result{border-color:#18b78c;background:#d8fff2;color:#067458;box-shadow:0 5px 18px #18b78c60}
+.angle-math{display:flex;align-items:center;justify-content:center;background:#fff4ff;color:#ba2677;border:2px solid #f5a3d4;border-radius:9px;padding:2px 5px;font-weight:900;font-size:19px;white-space:nowrap;pointer-events:none}
+@keyframes revealSide{from{opacity:0;transform:translateY(10px) scale(.92)}to{opacity:1;transform:translateY(0) scale(1)}}
+.memory-panel{flex-shrink:0;display:flex;align-items:center;justify-content:space-between;gap:10px;background:linear-gradient(105deg,#edfaff,#fcf0ff);padding:9px 14px;border-top:2px solid #b8dcff;border-bottom:2px solid #c4caff;color:#1e377e;min-height:82px}
+.memory-panel .memory-copy{flex:1;min-width:0;font-weight:900;font-size:clamp(12px,1.08vw,15px)}
+.memory-panel .memory-copy strong{display:block;color:#5330ba;font-size:12px;letter-spacing:.35px;margin-bottom:4px;text-transform:uppercase}
+.memory-panel .memory-equation{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-top:4px}
+.memory-panel .memory-equation > span{background:#fff;border:1px solid #d4dcff;padding:5px 8px;border-radius:9px;font-size:clamp(12px,1.1vw,15px)}
+.memory-figure{flex-shrink:0;width:90px;height:69px}
+.memory-figure svg{width:100%;height:100%}
+.memory-tip{font-weight:800;font-size:11px;color:#5270a0;margin-top:4px}
+.viz{min-height:180px}
+.tri-svg{height:min(100%,415px);width:min(100%,660px)}
+.angle-sector{cursor:pointer;transition:fill .2s,stroke-width .2s}
+.angle-sector:hover{fill:#f9ad4590;stroke-width:5}
+.angle-sector.chosen{fill:#ffc83ca3;stroke:#eb8e06;stroke-width:4}
+.tri-outline{filter:drop-shadow(0 6px 5px #2b4db02a)}
+.graph-hint{display:inline-flex;align-items:center;gap:6px;background:#2141a3;color:white;border-radius:8px;padding:5px 9px;font-size:12px;font-weight:900}
+.guide{background:#ffeb75;box-shadow:0 4px 10px #0002}
+.stage .toolbar-wrap{z-index:24}
+.stage .drawing-layer{z-index:20}
+.stage .toolbar-wrap .tools{z-index:25;pointer-events:auto}
+@media(min-width:901px) and (max-height:760px){.memory-panel{min-height:66px;padding:5px 9px}.memory-figure{width:66px;height:55px}.memory-tip{display:none}.memory-panel .memory-equation > span{padding:2px 5px}.explain{gap:5px}}
+@media(max-width:900px){.memory-panel{flex-wrap:wrap}.memory-panel .memory-copy{font-size:12px}.side-math{font-size:15px}.angle-math{font-size:15px}}
+</style></head><body><div id="app" class="app"><div class="ambient"></div><div class="symbols"><span>∠</span><span>√2</span><span>△</span><span>30°</span><span>k√3</span><span>∠</span><span>45°</span><span>3:4:5</span></div><header class="top"><div class="brand">🚀 TuProfe20 Lab <span style="font-size:12px;color:white">| Geometría & Trigonometría</span></div><div class="top-actions"><button id="soundBtn" class="control" title="Sonidos">🔊 Sonido</button><button id="homeBtn" class="control">⌂ Portada</button></div></header><section id="home" class="home"><div class="intro"><div class="tag">LABORATORIO MATEMÁTICO INTERACTIVO</div><h1>Triángulos rectángulos <em>notables</em></h1><p>10 desafíos progresivos · 30°–60° · 45°–45° · 37°–53°</p><p style="font-size:13px;color:#c5fff5">Selecciona cualquier reto. Aprende, responde y dibuja directamente sobre el esquema.</p></div><div id="cards" class="cards"></div></section><section id="game" class="game hidden"><div class="gamebar" id="gamebar"></div><div class="stage" id="stage"><section class="panel left"><div class="heading"><span>📘 Enunciado y resolución guiada</span><span id="typeChip" class="micro"></span></div><div class="prompt" id="prompt"></div><div class="explain"><div class="robotbox"><div id="robot" class="robot" aria-hidden="true">🤖</div><div id="speech" class="speech" aria-live="polite"></div></div><div id="steps" class="step-list"></div><div id="formula" class="formula"></div></div></section><section class="panel right"><div class="heading"><span>📐 Esquema visual interactivo</span><span class="micro">Pulsa un ángulo para resaltarlo</span></div><div class="viz"><svg id="triangle" class="tri-svg" viewBox="0 0 520 360" role="img" aria-label="Triángulo rectángulo con lados y ángulos"></svg><div id="angleHelp" class="guide">👆 Selecciona un ángulo</div></div><div class="answer"><label for="answerInput">Tu respuesta:</label><input id="answerInput" autocomplete="off" placeholder="Ej.: 7√3"><button id="checkBtn" class="btn">✓ Comprobar</button><button id="hintBtn" class="btn aux">💡 Pista</button><span id="feedback" class="feedback"></span></div></section><canvas id="draw" class="drawing-layer" style="pointer-events:none"></canvas><div class="toolbar-wrap"><div class="tools"><button id="selectTool" class="tool active">🖱️ Seleccionar</button><button id="penTool" class="tool">✏️ Lápiz</button><button id="markerTool" class="tool">🖍️ Resaltar</button><button id="undoBtn" class="tool" title="Ctrl+Z">↶ Ctrl+Z</button><button id="clearBtn" class="tool">🗑️</button><button class="swatch selected" data-color="#ed3154" style="background:#ed3154" title="Rojo"></button><button class="swatch" data-color="#2457f2" style="background:#2457f2" title="Azul"></button><button class="swatch" data-color="#119f72" style="background:#119f72" title="Verde"></button><button class="swatch" data-color="#141b39" style="background:#141b39" title="Negro"></button><input id="widthInput" title="Grosor del lápiz" type="range" min="2" max="14" value="5" style="width:56px;accent-color:#493ddd"></div></div></div><div class="foot"><button id="prevBtn" class="btn aux">◀ Paso anterior</button><span class="progress" id="progress"></span><button id="nextBtn" class="btn">Siguiente paso ▶</button></div></section></div>
+<script>
+'use strict';
+const challenges=[
+{type:'30-60',name:'El cateto desconocido',level:'Inicial',angA:60,question:'En el triángulo ABC, recto en B, AB = 2√3 y ∠A = 60°. Calcula BC.',sides:{AB:'2√3',BC:'x',AC:'?'},answer:'6',work:['Identifica el ángulo de 60° y el cateto AB, adyacente a él.','Recuerda: cateto corto = k; cateto largo = k√3; hipotenusa = 2k.','Como AB es el cateto corto, k = 2√3.','BC = k√3 = 2√3 · √3 = 2·3 = 6.'],forms:['30°–60°: k, k√3, 2k','AB = k = 2√3','BC = k√3','BC = 6']},
+{type:'45-45',name:'Catetos iguales',level:'Inicial',angA:45,question:'En un triángulo rectángulo de 45°–45°, el cateto BC mide 7. Calcula la hipotenusa AC.',sides:{AB:'?',BC:'7',AC:'x'},answer:'7√2',work:['Reconoce que los ángulos agudos son iguales.','Los dos catetos miden k; la hipotenusa mide k√2.','BC = 7, entonces k = 7.','AC = k√2 = 7√2.'],forms:['45°–45°: k, k, k√2','AB = BC = k','k = 7','AC = 7√2']},
+{type:'37-53',name:'La razón 3–4–5',level:'Básico',angA:53.13,question:'La hipotenusa AC mide 10 m y ∠A ≈ 53°. Determina el cateto menor AB.',sides:{AB:'x',BC:'?',AC:'10'},answer:'6',work:['Identifica la hipotenusa AC y el ángulo de 53°.','Usa los lados proporcionales 3k, 4k y 5k.','Como AC = 5k = 10, resulta k = 2.','El cateto menor AB = 3k = 3·2 = 6 m.'],forms:['37°–53°: 3k, 4k, 5k','AC = 5k','k = 10 ÷ 5 = 2','AB = 6 m']},
+{type:'30-60',name:'Simplificación con radicales',level:'Básico',angA:60,question:'En ABC, recto en B, ∠A = 60° y AB = 4√3. Halla BC.',sides:{AB:'4√3',BC:'x',AC:'?'},answer:'12',work:['Ubica ∠A = 60° y verifica cuál cateto es el corto.','AB corresponde al cateto corto k.','Entonces k = 4√3.','BC = k√3 = 4√3·√3 = 12.'],forms:['k, k√3, 2k','AB = k','k = 4√3','BC = 12']},
+{type:'45-45',name:'Ecuación y triángulo',level:'Intermedio',angA:45,question:'En ABC, recto en B, AB = 5x + 2 y la hipotenusa AC = 12√2. Encuentra x.',sides:{AB:'5x+2',BC:'?',AC:'12√2'},answer:'2',work:['Los catetos son iguales porque los ángulos son de 45°.','La hipotenusa vale k√2 = 12√2.','Divide entre √2: k = 12, así que 5x + 2 = 12.','5x = 10 y por tanto x = 2.'],forms:['AC = k√2','12√2 = k√2','k = 12','x = 2']},
+{type:'37-53',name:'Perímetro de escuadra',level:'Intermedio',angA:53.13,question:'Una escuadra de 37°–53° tiene su cateto mayor BC de 12 cm. Calcula su perímetro.',sides:{AB:'?',BC:'12',AC:'?'},answer:'36',work:['Identifica que BC es el cateto mayor, opuesto a 53°.','Las medidas siguen la razón 3k, 4k, 5k.','BC = 4k = 12, entonces k = 3.','Perímetro = 3k + 4k + 5k = 12k = 36 cm.'],forms:['3k + 4k + 5k','4k = 12','k = 3','P = 36 cm']},
+{type:'37-53',name:'La escalera deslizante',level:'Aplicación',angA:36.87,question:'Una escalera de 5 m forma ≈37° con la pared. Su extremo superior baja 1 m. ¿Cuánto se aleja la base respecto a su posición inicial?',sides:{AB:'4 m',BC:'3 m',AC:'5 m'},answer:'1',work:['Inicialmente la escalera forma un triángulo 3–4–5: altura 4 m y base 3 m.','La parte superior baja 1 m; la nueva altura es 3 m.','La escalera aún mide 5 m; la nueva base es 4 m (3–4–5).','El desplazamiento horizontal es 4 − 3 = 1 m.'],forms:['Inicial: altura 4, base 3','Nueva altura = 4 − 1 = 3','Nueva base = 4','Desplazamiento = 1 m']},
+{type:'30-60',name:'El lado horizontal',level:'Aplicación',angA:60,question:'En ABC, recto en B, AC = 14 y ∠C = 30°. Calcula BC.',sides:{AB:'?',BC:'x',AC:'14'},answer:'7√3',work:['AC es la hipotenusa; el ángulo de C mide 30°.','En el notable 30°–60° la hipotenusa es 2k.','2k = 14, así que k = 7.','BC, opuesto a 60°, mide k√3 = 7√3.'],forms:['AC = 2k','2k = 14','k = 7','BC = 7√3']},
+{type:'45-45',name:'Hipotenusa con radical',level:'Avanzado',angA:45,question:'Un triángulo rectángulo en A tiene ∠B = 45° y su hipotenusa BC = 11√2. Halla el cateto AB.',sides:{AB:'x',BC:'?',AC:'?'},answer:'11',work:['Como el ángulo agudo de B es 45°, el otro también mide 45°.','La hipotenusa es BC = k√2 = 11√2.','Divide entre √2: k = 11.','El cateto AB mide k = 11.'],forms:['BC = k√2','k√2 = 11√2','k = 11','AB = 11'],rightAt:'A',hyp:'BC'},
+{type:'37-53',name:'Razón de catetos',level:'Avanzado',angA:53.13,question:'En un triángulo 37°–53°, el cateto mayor mide 12 cm. Determina la hipotenusa.',sides:{AB:'?',BC:'12',AC:'x'},answer:'15',work:['El cateto mayor está opuesto al ángulo de 53°.','Se corresponde con 4k en la razón 3k–4k–5k.','4k = 12 ⇒ k = 3.','Hipotenusa = 5k = 5·3 = 15 cm.'],forms:['3k : 4k : 5k','4k = 12','k = 3','Hipotenusa = 15 cm']}
+];
+const gradients=[['#1265ee','#07bdda'],['#792bea','#e938a0'],['#ed651c','#f8ae23'],['#089a83','#2cc7c0'],['#de3261','#f67b26'],['#6a40e9','#3996e8'],['#006fa8','#03c5b3'],['#bf2b8b','#fb7462'],['#4f56d9','#13b4eb'],['#b55b08','#f2a922']];
+let index=0,step=0,mode='select',color='#ed3154',width=5,silent=false,angleChosen=null,solved=new Set(),feedbackState='',drawing=false,activePointer=null,history=[],last=null;
+const $=id=>document.getElementById(id),canvas=$('draw'),ctx=canvas.getContext('2d');
 
-        .animate-floatUp { animation: floatUp linear infinite; }
-        .animate-fadeInScale { animation: fadeInScale 0.3s ease-out forwards; }
-        .animate-popIn { animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
-        .animate-slideInRight { animation: slideInRight 0.3s ease-out forwards; }
-        .animate-confettiExplosion { animation: confettiExplosion 1.8s cubic-bezier(0.25, 1, 0.5, 1) forwards; }
-
-        .katex { font-weight: 900 !important; }
-        .math-enunciado .katex { font-size: clamp(1rem, 2vw, 1.4rem) !important; color: #ffffff !important; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
-        .math-label .katex { color: inherit !important; font-size: inherit !important; font-weight: 900 !important; filter: drop-shadow(0px 2px 2px rgba(0,0,0,0.2)); text-shadow: 1px 1px 0px rgba(255,255,255,0.7), -1px -1px 0px rgba(255,255,255,0.7); }
-    </style>
-</head>
-<body>
-    <div id="root"></div>
-
-    <script type="text/babel">
-        const { useState, useEffect, useRef, memo } = React;
-
-        const Icon = ({ paths, className = "", size = 24 }) => (
-            <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className={className} dangerouslySetInnerHTML={{__html: paths}} />
-        );
-
-        const VolumeX = (p) => <Icon {...p} paths='<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/>' />;
-        const Volume2 = (p) => <Icon {...p} paths='<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/>' />;
-        const Rocket = (p) => <Icon {...p} paths='<path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/>' />;
-        const Activity = (p) => <Icon {...p} paths='<polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>' />;
-        const ChevronLeft = (p) => <Icon {...p} paths='<polyline points="15 18 9 12 15 6"/>' />;
-        const ChevronRight = (p) => <Icon {...p} paths='<polyline points="9 18 15 12 9 6"/>' />;
-        const Lightbulb = (p) => <Icon {...p} paths='<path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.9 1.2 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/>' />;
-
-        const AudioController = {
-            ctx: null, muted: false,
-            init: function() {
-                if (this.ctx) return;
-                const AudioContext = window.AudioContext || window.webkitAudioContext;
-                if (AudioContext) this.ctx = new AudioContext();
-            },
-            play: function(type) {
-                if (this.muted || !this.ctx) return;
-                if (this.ctx.state === 'suspended') this.ctx.resume();
-                const osc = this.ctx.createOscillator();
-                const gain = this.ctx.createGain();
-                osc.connect(gain); gain.connect(this.ctx.destination);
-                const now = this.ctx.currentTime;
-                
-                if (type === 'pop') {
-                    osc.type = 'sine'; osc.frequency.setValueAtTime(500, now); osc.frequency.exponentialRampToValueAtTime(800, now + 0.1);
-                    gain.gain.setValueAtTime(0.25, now); gain.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
-                    osc.start(now); osc.stop(now + 0.1);
-                } else if (type === 'pop-reverse') {
-                    osc.type = 'triangle'; osc.frequency.setValueAtTime(650, now); osc.frequency.exponentialRampToValueAtTime(280, now + 0.12);
-                    gain.gain.setValueAtTime(0.2, now); gain.gain.exponentialRampToValueAtTime(0.01, now + 0.12);
-                    osc.start(now); osc.stop(now + 0.12);
-                } else if (type === 'success') {
-                    osc.type = 'triangle'; osc.frequency.setValueAtTime(440, now); osc.frequency.setValueAtTime(554, now + 0.1); osc.frequency.setValueAtTime(659, now + 0.2);
-                    gain.gain.setValueAtTime(0, now); gain.gain.linearRampToValueAtTime(0.2, now + 0.05); gain.gain.linearRampToValueAtTime(0, now + 0.4);
-                    osc.start(now); osc.stop(now + 0.4);
-                }
-            },
-            toggleMute: function() { this.muted = !this.muted; return this.muted; }
-        };
-
-        const MathDisplay = memo(({ latex, className = "", inline = false }) => {
-            const containerRef = useRef(null);
-            useEffect(() => {
-                if (containerRef.current && window.katex) {
-                    try { window.katex.render(latex, containerRef.current, { displayMode: !inline, throwOnError: false }); }
-                    catch (e) { containerRef.current.innerText = latex; }
-                }
-            }, [latex, inline]);
-            return inline ? <span ref={containerRef} className={`inline-block align-middle ${className}`} /> : <div className={`relative w-full flex justify-center ${className}`}><div ref={containerRef} /></div>;
-        });
-
-        const DrawingCanvas = () => {
-            const canvasRef = useRef(null);
-            const [isDrawing, setIsDrawing] = useState(false);
-            const [isDrawMode, setIsDrawMode] = useState(false);
-            const [tool, setTool] = useState('pen'); 
-            const [penColor, setPenColor] = useState('#ef4444');
-            const [penWidth, setPenWidth] = useState(6);
-            const penPointsRef = useRef([]);
-            const activePointerRef = useRef(null);
-            const savedImageRef = useRef(null);
-            const historyRef = useRef([]);
-            const startPosRef = useRef({x:0, y:0});
-
-            const undo = () => {
-                const canvas = canvasRef.current;
-                if (!canvas) return;
-                const ctx = canvas.getContext('2d');
-                if (historyRef.current.length > 0) {
-                    const lastState = historyRef.current.pop();
-                    ctx.putImageData(lastState, 0, 0);
-                    savedImageRef.current = lastState;
-                } else {
-                    ctx.clearRect(0, 0, canvas.width, canvas.height);
-                    if (canvas.width > 0 && canvas.height > 0) {
-                        savedImageRef.current = ctx.getImageData(0, 0, canvas.width, canvas.height);
-                    }
-                }
-            };
-
-            useEffect(() => {
-                const handleKeyDown = (e) => {
-                    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z') {
-                        e.preventDefault();
-                        undo();
-                    }
-                };
-                window.addEventListener('keydown', handleKeyDown);
-                return () => window.removeEventListener('keydown', handleKeyDown);
-            }, []);
-
-            useEffect(() => {
-                const canvas = canvasRef.current;
-                if (!canvas || !canvas.parentElement) return;
-                const observer = new ResizeObserver((entries) => {
-                    for (let entry of entries) {
-                        const { width, height } = entry.contentRect;
-                        const ctx = canvas.getContext('2d');
-                        let imgData = null;
-                        if (canvas.width > 0 && canvas.height > 0) {
-                            try { imgData = ctx.getImageData(0, 0, canvas.width, canvas.height); } catch (e) {}
-                        }
-                        canvas.width = width; canvas.height = height;
-                        if (imgData) ctx.putImageData(imgData, 0, 0);
-                    }
-                });
-                observer.observe(canvas.parentElement);
-                return () => observer.disconnect();
-            }, []);
-
-            const hexToRgba = (hex, alpha) => {
-                const r = parseInt(hex.slice(1, 3), 16), g = parseInt(hex.slice(3, 5), 16), b = parseInt(hex.slice(5, 7), 16);
-                return `rgba(${r}, ${g}, ${b}, ${alpha})`;
-            };
-
-            const startDrawing = (e) => {
-                if (!isDrawMode || activePointerRef.current !== null || (e.pointerType === 'mouse' && e.button !== 0)) return;
-                const canvas = canvasRef.current;
-                const ctx = canvas.getContext('2d');
-                const rect = canvas.getBoundingClientRect();
-                
-                ctx.lineCap = 'round'; ctx.lineJoin = 'round';
-                if (tool === 'highlighter') { ctx.lineWidth = 24; ctx.strokeStyle = hexToRgba(penColor, 0.3); ctx.globalCompositeOperation = 'multiply'; } 
-                else { ctx.lineWidth = penWidth; ctx.strokeStyle = penColor; ctx.globalCompositeOperation = 'source-over'; }
-
-                const startX = e.clientX - rect.left, startY = e.clientY - rect.top;
-                
-                const currentState = ctx.getImageData(0, 0, canvas.width, canvas.height);
-                historyRef.current.push(currentState);
-                savedImageRef.current = currentState;
-                startPosRef.current = { x: startX, y: startY };
-                
-                ctx.beginPath(); ctx.moveTo(startX, startY);
-                penPointsRef.current = [{ x: startX, y: startY }];
-                activePointerRef.current = e.pointerId;
-                canvas.setPointerCapture(e.pointerId);
-                setIsDrawing(true);
-            };
-
-            const draw = (e) => {
-                if (activePointerRef.current !== e.pointerId || !isDrawMode) return;
-                const canvas = canvasRef.current;
-                const ctx = canvas.getContext('2d');
-                const rect = canvas.getBoundingClientRect();
-                let currentX = e.clientX - rect.left, currentY = e.clientY - rect.top;
-
-                if (e.shiftKey) {
-                    ctx.putImageData(savedImageRef.current, 0, 0);
-                    ctx.beginPath(); 
-                    ctx.moveTo(startPosRef.current.x, startPosRef.current.y);
-                    if (Math.abs(currentX - startPosRef.current.x) > Math.abs(currentY - startPosRef.current.y)) {
-                        currentY = startPosRef.current.y;
-                    } else {
-                        currentX = startPosRef.current.x;
-                    }
-                    ctx.lineTo(currentX, currentY); 
-                    ctx.stroke();
-                } else {
-                    if (tool === 'highlighter') ctx.putImageData(savedImageRef.current, 0, 0);
-                    ctx.lineTo(currentX, currentY); ctx.stroke();
-                }
-            };
-
-            const stopDrawing = () => {
-                activePointerRef.current = null;
-                if (isDrawing) { canvasRef.current.getContext('2d').closePath(); setIsDrawing(false); }
-            };
-
-            const selectTool = (nextTool) => {
-                stopDrawing(); AudioController.play('pop');
-                setIsDrawMode(nextTool !== 'selector');
-                if (nextTool !== 'selector') setTool(nextTool);
-            };
-
-            return (
-                <>
-                    <div style={{zIndex: 120, pointerEvents: 'auto'}} className="absolute top-2 right-2 flex flex-wrap max-w-[calc(100%-1rem)] justify-end gap-2 bg-white/80 p-1.5 rounded-xl backdrop-blur-sm shadow-md border border-slate-200">
-                        <button onClick={() => selectTool('selector')} className={`px-3 py-1.5 text-xs sm:text-sm font-black rounded-lg border-2 shadow-sm ${!isDrawMode ? 'bg-cyan-500 text-white border-cyan-600' : 'bg-white text-slate-600 border-slate-300'}`}>🖱️ Selector</button>
-                        <button onClick={() => selectTool('pen')} className={`px-3 py-1.5 text-xs sm:text-sm font-black rounded-lg border-2 shadow-sm ${isDrawMode && tool === 'pen' ? 'bg-indigo-500 text-white border-indigo-600 scale-105' : 'bg-white text-slate-600 border-slate-300'}`}>🖊️ Lápiz</button>
-                        <button onClick={() => selectTool('highlighter')} className={`px-3 py-1.5 text-xs sm:text-sm font-black rounded-lg border-2 shadow-sm ${isDrawMode && tool === 'highlighter' ? 'bg-yellow-400 text-slate-900 border-yellow-500 scale-105' : 'bg-white text-slate-600 border-slate-300'}`}>🖍️ Resaltador</button>
-                        {isDrawMode && (
-                            <>
-                                <button onClick={undo} className="px-3 py-1.5 text-xs sm:text-sm font-black bg-white text-orange-500 border-2 border-orange-300 rounded-lg shadow-sm" title="Deshacer (Ctrl+Z)">↩️ Deshacer</button>
-                                <button onClick={() => {
-                                    historyRef.current.push(canvasRef.current.getContext('2d').getImageData(0, 0, canvasRef.current.width, canvasRef.current.height));
-                                    canvasRef.current.getContext('2d').clearRect(0, 0, canvasRef.current.width, canvasRef.current.height)
-                                }} className="px-3 py-1.5 text-xs sm:text-sm font-black bg-white text-rose-600 border-2 border-rose-300 rounded-lg shadow-sm">🗑️ Limpiar</button>
-                            </>
-                        )}
-                    </div>
-                    {isDrawMode && (
-                        <div className="absolute top-1/2 right-4 -translate-y-1/2 z-[110] flex flex-col gap-3 p-2 bg-white/90 backdrop-blur-md rounded-xl border-[3px] border-slate-200 shadow-xl pointer-events-auto">
-                            {['#ef4444', '#0f172a', '#3b82f6', '#22c55e', '#facc15'].map(hex => (
-                                <button key={hex} onClick={() => setPenColor(hex)} className={`w-8 h-8 rounded-full border-[3px] shadow-sm transition-all ${penColor === hex ? 'border-white outline outline-[3px] outline-slate-800 scale-110' : 'border-black/20'}`} style={{backgroundColor: hex}}/>
-                            ))}
-                        </div>
-                    )}
-                    <canvas ref={canvasRef} style={{ zIndex: 100, pointerEvents: isDrawMode ? 'auto' : 'none', touchAction: isDrawMode ? 'none' : 'auto' }} className={`absolute inset-0 z-[100] touch-none ${isDrawMode ? 'cursor-crosshair' : ''}`} onPointerDown={startDrawing} onPointerMove={draw} onPointerUp={stopDrawing} onPointerLeave={stopDrawing} />
-                </>
-            );
-        };
-
-        const ReminderTriangle = ({ type }) => {
-            let points, rightAngle, arcs, labels;
-            
-            if (type === "30-60") {
-                points = "20,20 20,120 140,120";
-                rightAngle = "20,110 30,110 30,120";
-                arcs = ["M20,40 A20,20 0 0,0 30,36", "M125,120 A20,20 0 0,0 133,110"];
-                labels = [
-                    { x: 30, y: 55, text: "60°", isAngle: true },
-                    { x: 110, y: 112, text: "30°", isAngle: true },
-                    { x: 5, y: 70, text: "k" },
-                    { x: 80, y: 135, text: "k√3" },
-                    { x: 85, y: 65, text: "2k" },
-                    { x: 20, y: 10, text: "A" },
-                    { x: 10, y: 125, text: "B" },
-                    { x: 150, y: 125, text: "C" }
-                ];
-            } else if (type === "45-45") {
-                points = "20,20 20,120 120,120";
-                rightAngle = "20,110 30,110 30,120";
-                arcs = ["M20,45 A25,25 0 0,0 38,38", "M95,120 A25,25 0 0,0 102,102"];
-                labels = [
-                    { x: 32, y: 55, text: "45°", isAngle: true },
-                    { x: 85, y: 105, text: "45°", isAngle: true },
-                    { x: 5, y: 70, text: "k" },
-                    { x: 70, y: 135, text: "k" },
-                    { x: 80, y: 65, text: "k√2" },
-                    { x: 20, y: 10, text: "A" },
-                    { x: 10, y: 125, text: "B" },
-                    { x: 130, y: 125, text: "C" }
-                ];
-            } else if (type === "37-53") {
-                points = "20,20 20,120 130,120";
-                rightAngle = "20,110 30,110 30,120";
-                arcs = ["M20,40 A20,20 0 0,0 32,36", "M110,120 A20,20 0 0,0 118,105"];
-                labels = [
-                    { x: 30, y: 55, text: "53°", isAngle: true },
-                    { x: 95, y: 108, text: "37°", isAngle: true },
-                    { x: 5, y: 70, text: "3k" },
-                    { x: 75, y: 135, text: "4k" },
-                    { x: 85, y: 65, text: "5k" },
-                    { x: 20, y: 10, text: "A" },
-                    { x: 10, y: 125, text: "B" },
-                    { x: 140, y: 125, text: "C" }
-                ];
-            }
-
-            return (
-                <div className="bg-gradient-to-br from-indigo-50 to-blue-100 p-3 rounded-2xl border-2 border-indigo-200 shadow-md flex flex-col items-center">
-                    <h4 className="text-xs sm:text-sm font-black text-indigo-700 uppercase tracking-widest mb-1 flex items-center gap-1"><Lightbulb className="w-4 h-4"/> Recordatorio</h4>
-                    <svg viewBox="0 0 140 140" className="w-32 h-32 sm:w-48 sm:h-48 drop-shadow-md">
-                        <polygon points={points} fill="rgba(99, 102, 241, 0.1)" stroke="#4f46e5" strokeWidth="2.5" strokeLinejoin="round" />
-                        <polyline points={rightAngle} fill="none" stroke="#4f46e5" strokeWidth="2" />
-                        {arcs.map((arc, i) => <path key={i} d={arc} fill="none" stroke="#4f46e5" strokeWidth="1.5" />)}
-                        {labels.map((lbl, i) => (
-                            <text key={i} x={lbl.x} y={lbl.y} fontSize={lbl.isAngle ? "11" : "14"} fontWeight="900" fill={lbl.isAngle ? "#e11d48" : "#4338ca"} textAnchor="middle" alignmentBaseline="middle">{lbl.text}</text>
-                        ))}
-                    </svg>
-                </div>
-            );
-        };
-
-        const TriangleGraphic = memo(({ config, currentStep }) => {
-            if (!config) return null;
-            return (
-                <div className="relative w-full max-w-lg aspect-[4/3] mx-auto z-10 flex items-center justify-center pointer-events-none">
-                    <svg viewBox="0 0 400 300" className="absolute inset-0 w-full h-full drop-shadow-xl overflow-visible">
-                        <polygon points={config.points} fill="rgba(6, 182, 212, 0.08)" stroke="#06b6d4" strokeWidth="4" strokeLinejoin="round" />
-                        {config.rightAngle && <polyline points={config.rightAngle} fill="none" stroke="#06b6d4" strokeWidth="3" />}
-                        {config.arcs && config.arcs.map((arc, i) => <path key={i} d={arc} fill="none" stroke="#06b6d4" strokeWidth="3" />)}
-                        {config.lines && config.lines.map((l, i) => <line key={i} x1={l[0]} y1={l[1]} x2={l[2]} y2={l[3]} stroke="#f43f5e" strokeWidth="3" strokeDasharray="6,6" strokeLinecap="round" />)}
-                    </svg>
-                    
-                    {config.labels.map((lbl, i) => {
-                        const isVisible = currentStep >= lbl.step;
-                        const isHidden = lbl.hideOnStep !== undefined && currentStep >= lbl.hideOnStep;
-                        if (!isVisible || isHidden) return null;
-                        
-                        return (
-                            <div key={`${i}-${lbl.step}`} className={`absolute math-label animate-fadeInScale ${lbl.className || 'text-slate-800 text-lg sm:text-2xl font-black'} whitespace-nowrap`} 
-                                 style={{ left: `${(lbl.x / 400) * 100}%`, top: `${(lbl.y / 300) * 100}%`, transform: 'translate(-50%, -50%)' }}>
-                                <MathDisplay inline latex={lbl.latex} />
-                            </div>
-                        );
-                    })}
-                </div>
-            );
-        });
-
-        const defaultStepsText = [
-            "Datos: Ubicamos la información inicial de lados y un ángulo.",
-            "Ángulos: Completamos el ángulo faltante para identificar el triángulo notable.",
-            "Ecuaciones: Igualamos los lados a sus proporciones correspondientes.",
-            "Despeje: Resolvemos la ecuación principal para hallar el valor de 'k'.",
-            "Solución: Reemplazamos 'k' para calcular el valor solicitado."
-        ];
-
-        const EXERCISES = [
-            { 
-                id: 1, title: "Ejercicio 1", subtitle: "Triángulo Notable 30°-60°", type: "30-60",
-                enunciado: () => <span>Triángulo ABC, recto en B. Si <MathDisplay inline latex="AB = 2\sqrt{3}" /> y <MathDisplay inline latex="m\angle BAC = 60^\circ" />, halle BC.</span>,
-                stepsText: defaultStepsText,
-                graphic: {
-                    points: "120,50 120,250 270,250",
-                    rightAngle: "120,230 140,230 140,250",
-                    arcs: ["M120,90 A40,40 0 0,0 145,78"],
-                    labels: [
-                        // Datos
-                        { step: 0, x: 80, y: 150, latex: "2\\sqrt{3}", hideOnStep: 2 },
-                        { step: 0, x: 195, y: 280, latex: "x", hideOnStep: 4 },
-                        { step: 0, x: 138, y: 100, latex: "60^\\circ", className: "text-rose-600 text-base sm:text-xl font-black" },
-                        
-                        // Ángulos
-                        { step: 1, x: 240, y: 230, latex: "30^\\circ", className: "text-rose-600 text-base sm:text-xl font-black" },
-                        
-                        // Ecuaciones
-                        { step: 2, x: 60, y: 150, latex: "2\\sqrt{3} = k", hideOnStep: 3, className: "text-indigo-700 text-xl font-black bg-white/90 px-2 rounded-lg shadow-sm" },
-                        { step: 2, x: 195, y: 280, latex: "x = k\\sqrt{3}", hideOnStep: 4, className: "text-indigo-700 text-xl font-black bg-white/90 px-2 rounded-lg shadow-sm" },
-                        { step: 2, x: 220, y: 130, latex: "2k", className: "text-indigo-700 text-xl font-black bg-white/90 px-2 rounded-lg shadow-sm" },
-                        
-                        // Despeje
-                        { step: 3, x: 60, y: 150, latex: "\\mathbf{k = 2\\sqrt{3}}", className: "text-amber-600 text-2xl font-black bg-amber-50 border-2 border-amber-300 px-3 py-1 shadow-md rounded-xl z-20" },
-                        
-                        // Solución
-                        { step: 4, x: 195, y: 280, latex: "\\therefore x = (2\\sqrt{3})\\sqrt{3} = 6", className: "text-rose-600 text-2xl sm:text-3xl font-black bg-white p-2 rounded-xl shadow-lg border-2 border-rose-300 z-20" }
-                    ]
-                }
-            },
-            { 
-                id: 2, title: "Ejercicio 2", subtitle: "Triángulo Notable 45°-45°", type: "45-45",
-                enunciado: () => <span>Triángulo ABC, recto en B. Si <MathDisplay inline latex="m\angle BAC = 45^\circ" /> y <MathDisplay inline latex="BC = 7" />, halle AC.</span>,
-                stepsText: defaultStepsText,
-                graphic: {
-                    points: "120,50 120,250 320,250",
-                    rightAngle: "120,230 140,230 140,250",
-                    arcs: ["M120,90 A40,40 0 0,0 148,78"],
-                    labels: [
-                        { step: 0, x: 220, y: 280, latex: "7", hideOnStep: 2 },
-                        { step: 0, x: 235, y: 135, latex: "x", hideOnStep: 4 },
-                        { step: 0, x: 145, y: 100, latex: "45^\\circ", className: "text-rose-600 text-base sm:text-xl font-black" },
-                        
-                        { step: 1, x: 280, y: 235, latex: "45^\\circ", className: "text-rose-600 text-base sm:text-xl font-black" },
-
-                        { step: 2, x: 220, y: 280, latex: "7 = k", hideOnStep: 3, className: "text-indigo-700 text-xl font-black bg-white/90 px-2 rounded-lg shadow-sm" },
-                        { step: 2, x: 80, y: 150, latex: "k", className: "text-indigo-700 text-xl font-black bg-white/90 px-2 rounded-lg shadow-sm" },
-                        { step: 2, x: 245, y: 135, latex: "x = k\\sqrt{2}", hideOnStep: 4, className: "text-indigo-700 text-xl font-black bg-white/90 px-2 rounded-lg shadow-sm" },
-                        
-                        { step: 3, x: 220, y: 280, latex: "\\mathbf{k = 7}", className: "text-amber-600 text-2xl font-black bg-amber-50 border-2 border-amber-300 px-3 py-1 shadow-md rounded-xl z-20" },
-                        
-                        { step: 4, x: 260, y: 130, latex: "\\therefore AC = 7\\sqrt{2}", className: "text-rose-600 text-2xl sm:text-3xl font-black bg-white p-2 rounded-xl shadow-lg border-2 border-rose-300 z-20" }
-                    ]
-                }
-            },
-            { 
-                id: 3, title: "Ejercicio 3", subtitle: "Triángulo Notable 37°-53°", type: "37-53",
-                enunciado: () => <span>La hipotenusa de un triángulo rectángulo es 10m y un ángulo agudo mide <MathDisplay inline latex="53^\circ" />. Halle la longitud del cateto menor.</span>,
-                stepsText: defaultStepsText,
-                graphic: {
-                    points: "120,50 120,250 270,250",
-                    rightAngle: "120,230 140,230 140,250",
-                    arcs: ["M120,90 A40,40 0 0,0 145,78"],
-                    labels: [
-                        { step: 0, x: 215, y: 135, latex: "10", hideOnStep: 2 },
-                        { step: 0, x: 138, y: 100, latex: "53^\\circ", className: "text-rose-600 text-base sm:text-xl font-black" },
-                        { step: 0, x: 80, y: 150, latex: "x", hideOnStep: 4 }, 
-                        
-                        { step: 1, x: 240, y: 235, latex: "37^\\circ", className: "text-rose-600 text-base sm:text-xl font-black" },
-
-                        { step: 2, x: 220, y: 135, latex: "10 = 5k", hideOnStep: 3, className: "text-indigo-700 text-xl font-black bg-white/90 px-2 rounded-lg shadow-sm" },
-                        { step: 2, x: 80, y: 150, latex: "x = 3k", hideOnStep: 4, className: "text-indigo-700 text-xl font-black bg-white/90 px-2 rounded-lg shadow-sm" },
-                        { step: 2, x: 195, y: 280, latex: "4k", className: "text-indigo-700 text-xl font-black bg-white/90 px-2 rounded-lg shadow-sm" },
-                        
-                        { step: 3, x: 270, y: 100, latex: "\\mathbf{k = 2}", className: "text-amber-600 text-2xl font-black bg-amber-50 border-2 border-amber-300 px-3 py-1 shadow-md rounded-xl z-20" },
-                        
-                        { step: 4, x: 80, y: 150, latex: "\\therefore x = 3(2) = 6", className: "text-rose-600 text-2xl sm:text-3xl font-black bg-white p-2 rounded-xl shadow-lg border-2 border-rose-300 z-20" }
-                    ]
-                }
-            },
-            { 
-                id: 4, title: "Ejercicio 4", subtitle: "Aplicación 30°-60°", type: "30-60",
-                enunciado: () => <span>Triángulo ABC, recto en B. Si <MathDisplay inline latex="m\angle BAC=60^\circ" /> y <MathDisplay inline latex="AB=4\sqrt{3}" />, halle BC.</span>,
-                stepsText: defaultStepsText,
-                graphic: {
-                    points: "120,50 120,250 250,250",
-                    rightAngle: "120,230 140,230 140,250",
-                    arcs: ["M120,90 A40,40 0 0,0 142,75"],
-                    labels: [
-                        { step: 0, x: 80, y: 150, latex: "4\\sqrt{3}", hideOnStep: 2 },
-                        { step: 0, x: 185, y: 280, latex: "x", hideOnStep: 4 },
-                        { step: 0, x: 135, y: 100, latex: "60^\\circ", className: "text-rose-600 text-base sm:text-xl font-black" },
-                        
-                        { step: 1, x: 220, y: 235, latex: "30^\\circ", className: "text-rose-600 text-base sm:text-xl font-black" },
-
-                        { step: 2, x: 75, y: 150, latex: "4\\sqrt{3} = k", hideOnStep: 3, className: "text-indigo-700 text-xl font-black bg-white/90 px-2 rounded-lg shadow-sm" },
-                        { step: 2, x: 185, y: 280, latex: "x = k\\sqrt{3}", hideOnStep: 4, className: "text-indigo-700 text-xl font-black bg-white/90 px-2 rounded-lg shadow-sm" },
-                        { step: 2, x: 190, y: 130, latex: "2k", className: "text-indigo-700 text-xl font-black bg-white/90 px-2 rounded-lg shadow-sm" },
-                        
-                        { step: 3, x: 75, y: 150, latex: "\\mathbf{k = 4\\sqrt{3}}", className: "text-amber-600 text-2xl font-black bg-amber-50 border-2 border-amber-300 px-3 py-1 shadow-md rounded-xl z-20" },
-                        
-                        { step: 4, x: 220, y: 280, latex: "\\therefore BC = (4\\sqrt{3})\\sqrt{3} = 12", className: "text-rose-600 text-2xl sm:text-3xl font-black bg-white p-2 rounded-xl shadow-lg border-2 border-rose-300 z-20" }
-                    ]
-                }
-            },
-            { 
-                id: 5, title: "Ejercicio 5", subtitle: "Ecuación en Triángulo", type: "45-45",
-                enunciado: () => <span>Triángulo ABC, recto en B. <MathDisplay inline latex="m\angle BAC=45^\circ" />, <MathDisplay inline latex="AB = 5x+2" />, <MathDisplay inline latex="AC = 12\sqrt{2}" />. Halle x.</span>,
-                stepsText: defaultStepsText,
-                graphic: {
-                    points: "120,50 120,250 320,250",
-                    rightAngle: "120,230 140,230 140,250",
-                    arcs: ["M120,90 A40,40 0 0,0 148,78"],
-                    labels: [
-                        { step: 0, x: 60, y: 150, latex: "5x+2", hideOnStep: 2 },
-                        { step: 0, x: 235, y: 135, latex: "12\\sqrt{2}", hideOnStep: 2 },
-                        { step: 0, x: 145, y: 100, latex: "45^\\circ", className: "text-rose-600 text-base sm:text-xl font-black" },
-                        
-                        { step: 1, x: 280, y: 235, latex: "45^\\circ", className: "text-rose-600 text-base sm:text-xl font-black" },
-
-                        { step: 2, x: 60, y: 150, latex: "5x+2 = k", hideOnStep: 4, className: "text-indigo-700 text-xl font-black bg-white/90 px-2 rounded-lg shadow-sm" },
-                        { step: 2, x: 245, y: 135, latex: "12\\sqrt{2} = k\\sqrt{2}", hideOnStep: 3, className: "text-indigo-700 text-xl font-black bg-white/90 px-2 rounded-lg shadow-sm" },
-                        
-                        { step: 3, x: 280, y: 100, latex: "\\mathbf{k = 12}", className: "text-amber-600 text-2xl font-black bg-amber-50 border-2 border-amber-300 px-3 py-1 shadow-md rounded-xl z-20" },
-                        
-                        { step: 4, x: 120, y: 150, latex: "12 = 5x+2 \\Rightarrow x = 2", className: "text-rose-600 text-2xl sm:text-3xl font-black bg-white p-2 rounded-xl shadow-lg border-2 border-rose-300 z-20" }
-                    ]
-                }
-            },
-            { 
-                id: 6, title: "Ejercicio 6", subtitle: "Perímetro Escuadra", type: "37-53",
-                enunciado: () => <span>Calcule el perímetro de una escuadra cuyo ángulo es <MathDisplay inline latex="37^\circ" /> y su cateto adyacente mide 12 cm.</span>,
-                stepsText: defaultStepsText,
-                graphic: {
-                    points: "120,100 120,250 320,250",
-                    rightAngle: "120,230 140,230 140,250",
-                    arcs: ["M285,250 A35,35 0 0,1 292,223"],
-                    labels: [
-                        { step: 0, x: 220, y: 280, latex: "12", hideOnStep: 2 },
-                        { step: 0, x: 275, y: 235, latex: "37^\\circ", className: "text-rose-600 text-base sm:text-xl font-black" },
-                        
-                        { step: 1, x: 145, y: 125, latex: "53^\\circ", className: "text-rose-600 text-base sm:text-xl font-black" },
-
-                        { step: 2, x: 220, y: 280, latex: "12 = 4k", hideOnStep: 3, className: "text-indigo-700 text-xl font-black bg-white/90 px-2 rounded-lg shadow-sm" },
-                        { step: 2, x: 80, y: 175, latex: "3k", hideOnStep: 4, className: "text-indigo-700 text-xl font-black bg-white/90 px-2 rounded-lg shadow-sm" },
-                        { step: 2, x: 235, y: 155, latex: "5k", hideOnStep: 4, className: "text-indigo-700 text-xl font-black bg-white/90 px-2 rounded-lg shadow-sm" },
-                        
-                        { step: 3, x: 220, y: 280, latex: "\\mathbf{k = 3}", className: "text-amber-600 text-2xl font-black bg-amber-50 border-2 border-amber-300 px-3 py-1 shadow-md rounded-xl z-20" },
-                        
-                        { step: 4, x: 220, y: 280, latex: "12", className: "text-rose-600 text-xl font-black bg-white px-2 rounded-lg shadow-sm z-10" },
-                        { step: 4, x: 80, y: 175, latex: "9", className: "text-rose-600 text-xl font-black bg-white px-2 rounded-lg shadow-sm z-10" },
-                        { step: 4, x: 235, y: 155, latex: "15", className: "text-rose-600 text-xl font-black bg-white px-2 rounded-lg shadow-sm z-10" },
-                        { step: 4, x: 220, y: 50, latex: "\\text{Perím} = 9+12+15 = 36", className: "text-rose-600 text-2xl sm:text-3xl font-black bg-white p-2 rounded-xl shadow-lg border-2 border-rose-300 z-30" }
-                    ]
-                }
-            },
-            { 
-                id: 7, title: "Ejercicio 7", subtitle: "Problema de Desplazamiento", type: "37-53",
-                enunciado: () => <span>Escalera de 5m apoyada en una pared (ángulo pared-escalera <MathDisplay inline latex="37^\circ" />). Si la parte superior resbala 1m, ¿cuánto resbala la base?</span>,
-                stepsText: defaultStepsText,
-                graphic: {
-                    points: "120,50 120,250 270,250",
-                    rightAngle: "120,230 140,230 140,250",
-                    arcs: ["M120,90 A40,40 0 0,0 145,78"],
-                    lines: [[120, 100, 320, 250]],
-                    labels: [
-                        { step: 0, x: 215, y: 135, latex: "5", hideOnStep: 2 },
-                        { step: 0, x: 138, y: 100, latex: "37^\\circ", className: "text-rose-600 text-base sm:text-xl font-black" },
-                        
-                        { step: 1, x: 240, y: 235, latex: "53^\\circ", className: "text-rose-600 text-base sm:text-xl font-black" },
-
-                        { step: 2, x: 225, y: 135, latex: "5 = 5k", hideOnStep: 3, className: "text-indigo-700 text-xl font-black bg-white/90 px-2 rounded-lg shadow-sm" },
-                        { step: 2, x: 80, y: 150, latex: "4k", hideOnStep: 4, className: "text-indigo-700 text-xl font-black bg-white/90 px-2 rounded-lg shadow-sm" },
-                        { step: 2, x: 195, y: 280, latex: "3k", hideOnStep: 4, className: "text-indigo-700 text-xl font-black bg-white/90 px-2 rounded-lg shadow-sm" },
-                        
-                        { step: 3, x: 280, y: 100, latex: "\\mathbf{k = 1}", className: "text-amber-600 text-2xl font-black bg-amber-50 border-2 border-amber-300 px-3 py-1 shadow-md rounded-xl z-20" },
-                        
-                        { step: 4, x: 80, y: 150, latex: "h_{nueva} = 3m", className: "text-purple-600 text-xl font-black bg-white p-1 shadow-md border border-purple-200 rounded-lg z-20" },
-                        { step: 4, x: 240, y: 160, latex: "5m", className: "text-slate-500 text-lg font-black bg-white/80 px-1 rounded transform rotate-35 z-20" },
-                        { step: 4, x: 220, y: 280, latex: "\\Delta = 4 - 3 = 1m", className: "text-rose-600 text-2xl sm:text-3xl font-black bg-white p-2 rounded-xl shadow-lg border-2 border-rose-300 z-30" }
-                    ]
-                }
-            },
-            { 
-                id: 8, title: "Ejercicio 8", subtitle: "Segmento Horizontal", type: "30-60",
-                enunciado: () => <span>Triángulo ABC, recto en B. <MathDisplay inline latex="AC = 14" />, <MathDisplay inline latex="m\angle ACB = 30^\circ" />. Halle BC.</span>,
-                stepsText: defaultStepsText,
-                graphic: {
-                    points: "120,100 120,250 380,250",
-                    rightAngle: "120,230 140,230 140,250",
-                    arcs: ["M335,250 A45,45 0 0,1 345,230"],
-                    labels: [
-                        { step: 0, x: 260, y: 155, latex: "14", hideOnStep: 2 },
-                        { step: 0, x: 250, y: 280, latex: "x", hideOnStep: 4 },
-                        { step: 0, x: 315, y: 235, latex: "30^\\circ", className: "text-rose-600 text-base sm:text-xl font-black" },
-                        
-                        { step: 1, x: 145, y: 125, latex: "60^\\circ", className: "text-rose-600 text-base sm:text-xl font-black" },
-
-                        { step: 2, x: 270, y: 155, latex: "14 = 2k", hideOnStep: 3, className: "text-indigo-700 text-xl font-black bg-white/90 px-2 rounded-lg shadow-sm" },
-                        { step: 2, x: 250, y: 280, latex: "x = k\\sqrt{3}", hideOnStep: 4, className: "text-indigo-700 text-xl font-black bg-white/90 px-2 rounded-lg shadow-sm" },
-                        { step: 2, x: 90, y: 175, latex: "k", className: "text-indigo-700 text-xl font-black bg-white/90 px-2 rounded-lg shadow-sm" },
-                        
-                        { step: 3, x: 270, y: 155, latex: "\\mathbf{k = 7}", className: "text-amber-600 text-2xl font-black bg-amber-50 border-2 border-amber-300 px-3 py-1 shadow-md rounded-xl z-20" },
-                        
-                        { step: 4, x: 250, y: 280, latex: "\\therefore BC = 7\\sqrt{3}", className: "text-rose-600 text-2xl sm:text-3xl font-black bg-white p-2 rounded-xl shadow-lg border-2 border-rose-300 z-20" }
-                    ]
-                }
-            },
-            { 
-                id: 9, title: "Ejercicio 9", subtitle: "Catetos Iguales", type: "45-45",
-                enunciado: () => <span>Triángulo ABC, recto en A. <MathDisplay inline latex="m\angle ABC = 45^\circ" />, <MathDisplay inline latex="BC = 11\sqrt{2}" />. Halle AB.</span>,
-                stepsText: defaultStepsText,
-                graphic: {
-                    points: "120,250 120,50 320,250", 
-                    rightAngle: "120,230 140,230 140,250",
-                    arcs: ["M120,90 A40,40 0 0,0 148,78"],
-                    labels: [
-                        { step: 0, x: 235, y: 135, latex: "11\\sqrt{2}", hideOnStep: 2 },
-                        { step: 0, x: 80, y: 150, latex: "x", hideOnStep: 4 },
-                        { step: 0, x: 145, y: 100, latex: "45^\\circ", className: "text-rose-600 text-base sm:text-xl font-black" },
-                        { step: 0, x: 100, y: 255, latex: "A", className: "text-slate-500 font-bold" },
-                        
-                        { step: 1, x: 280, y: 235, latex: "45^\\circ", className: "text-rose-600 text-base sm:text-xl font-black" },
-
-                        { step: 2, x: 245, y: 135, latex: "11\\sqrt{2} = k\\sqrt{2}", hideOnStep: 3, className: "text-indigo-700 text-xl font-black bg-white/90 px-2 rounded-lg shadow-sm" },
-                        { step: 2, x: 80, y: 150, latex: "x = k", hideOnStep: 4, className: "text-indigo-700 text-xl font-black bg-white/90 px-2 rounded-lg shadow-sm" },
-                        { step: 2, x: 220, y: 280, latex: "k", className: "text-indigo-700 text-xl font-black bg-white/90 px-2 rounded-lg shadow-sm" },
-                        
-                        { step: 3, x: 300, y: 100, latex: "\\mathbf{k = 11}", className: "text-amber-600 text-2xl font-black bg-amber-50 border-2 border-amber-300 px-3 py-1 shadow-md rounded-xl z-20" },
-                        
-                        { step: 4, x: 120, y: 150, latex: "\\therefore AB = 11", className: "text-rose-600 text-2xl sm:text-3xl font-black bg-white p-2 rounded-xl shadow-lg border-2 border-rose-300 z-20" }
-                    ]
-                }
-            },
-            { 
-                id: 10, title: "Ejercicio 10", subtitle: "Razón de Catetos", type: "37-53",
-                enunciado: () => <span>Determine la hipotenusa de un triángulo rectángulo si su cateto mayor mide 12 y el menor ángulo mide <MathDisplay inline latex="37^\circ" />.</span>,
-                stepsText: defaultStepsText,
-                graphic: {
-                    points: "120,100 120,250 320,250",
-                    rightAngle: "120,230 140,230 140,250",
-                    arcs: ["M285,250 A35,35 0 0,1 292,223"],
-                    labels: [
-                        { step: 0, x: 220, y: 280, latex: "12", hideOnStep: 2 },
-                        { step: 0, x: 275, y: 235, latex: "37^\\circ", className: "text-rose-600 text-base sm:text-xl font-black" },
-                        { step: 0, x: 235, y: 155, latex: "x", hideOnStep: 4 },
-                        
-                        { step: 1, x: 145, y: 125, latex: "53^\\circ", className: "text-rose-600 text-base sm:text-xl font-black" },
-
-                        { step: 2, x: 220, y: 280, latex: "12 = 4k", hideOnStep: 3, className: "text-indigo-700 text-xl font-black bg-white/90 px-2 rounded-lg shadow-sm" },
-                        { step: 2, x: 245, y: 155, latex: "x = 5k", hideOnStep: 4, className: "text-indigo-700 text-xl font-black bg-white/90 px-2 rounded-lg shadow-sm" },
-                        { step: 2, x: 80, y: 175, latex: "3k", className: "text-indigo-700 text-xl font-black bg-white/90 px-2 rounded-lg shadow-sm" },
-                        
-                        { step: 3, x: 220, y: 280, latex: "\\mathbf{k = 3}", className: "text-amber-600 text-2xl font-black bg-amber-50 border-2 border-amber-300 px-3 py-1 shadow-md rounded-xl z-20" },
-                        
-                        { step: 4, x: 260, y: 140, latex: "\\text{Hip} = 5(3) = 15", className: "text-rose-600 text-2xl sm:text-3xl font-black bg-white p-2 rounded-xl shadow-lg border-2 border-rose-300 z-20" }
-                    ]
-                }
-            },
-            { 
-                id: 11, title: "Ejercicio 11", subtitle: "Letras Distintas", type: "30-60",
-                enunciado: () => <span>Triángulo PQR, recto en R. <MathDisplay inline latex="m\angle PQR = 60^\circ" />, <MathDisplay inline latex="PR = 5\sqrt{3}" />. Halle PQ.</span>,
-                stepsText: defaultStepsText,
-                graphic: {
-                    points: "120,50 120,250 250,250",
-                    rightAngle: "120,230 140,230 140,250",
-                    arcs: ["M120,90 A40,40 0 0,0 142,75"],
-                    labels: [
-                        { step: 0, x: 185, y: 280, latex: "5\\sqrt{3}", hideOnStep: 2 },
-                        { step: 0, x: 200, y: 140, latex: "x", hideOnStep: 4 },
-                        { step: 0, x: 135, y: 100, latex: "60^\\circ", className: "text-rose-600 text-base sm:text-xl font-black" },
-                        { step: 0, x: 120, y: 25, latex: "Q", className: "text-slate-500 font-bold" },
-                        { step: 0, x: 100, y: 255, latex: "R", className: "text-slate-500 font-bold" },
-                        { step: 0, x: 265, y: 255, latex: "P", className: "text-slate-500 font-bold" },
-                        
-                        { step: 1, x: 220, y: 235, latex: "30^\\circ", className: "text-rose-600 text-base sm:text-xl font-black" },
-
-                        { step: 2, x: 185, y: 280, latex: "5\\sqrt{3} = k\\sqrt{3}", hideOnStep: 3, className: "text-indigo-700 text-xl font-black bg-white/90 px-2 rounded-lg shadow-sm" },
-                        { step: 2, x: 210, y: 140, latex: "x = 2k", hideOnStep: 4, className: "text-indigo-700 text-xl font-black bg-white/90 px-2 rounded-lg shadow-sm" },
-                        { step: 2, x: 80, y: 150, latex: "k", className: "text-indigo-700 text-xl font-black bg-white/90 px-2 rounded-lg shadow-sm" },
-                        
-                        { step: 3, x: 185, y: 280, latex: "\\mathbf{k = 5}", className: "text-amber-600 text-2xl font-black bg-amber-50 border-2 border-amber-300 px-3 py-1 shadow-md rounded-xl z-20" },
-                        
-                        { step: 4, x: 240, y: 140, latex: "\\therefore PQ = 10", className: "text-rose-600 text-2xl sm:text-3xl font-black bg-white p-2 rounded-xl shadow-lg border-2 border-rose-300 z-20" }
-                    ]
-                }
-            },
-            { 
-                id: 12, title: "Ejercicio 12", subtitle: "Identidad Algebraica", type: "45-45",
-                enunciado: () => <span>Triángulo ABC, recto en B. <MathDisplay inline latex="m\angle BCA = 45^\circ" />, <MathDisplay inline latex="AC = 11\sqrt{2}" />, <MathDisplay inline latex="BC = 4x+3" />. Halle x.</span>,
-                stepsText: defaultStepsText,
-                graphic: {
-                    points: "120,50 120,250 320,250",
-                    rightAngle: "120,230 140,230 140,250",
-                    arcs: ["M285,250 A35,35 0 0,1 292,223"],
-                    labels: [
-                        { step: 0, x: 235, y: 135, latex: "11\\sqrt{2}", hideOnStep: 2 },
-                        { step: 0, x: 220, y: 280, latex: "4x+3", hideOnStep: 4 },
-                        { step: 0, x: 275, y: 235, latex: "45^\\circ", className: "text-rose-600 text-base sm:text-xl font-black" },
-                        
-                        { step: 1, x: 145, y: 100, latex: "45^\\circ", className: "text-rose-600 text-base sm:text-xl font-black" },
-
-                        { step: 2, x: 245, y: 135, latex: "11\\sqrt{2} = k\\sqrt{2}", hideOnStep: 3, className: "text-indigo-700 text-xl font-black bg-white/90 px-2 rounded-lg shadow-sm" },
-                        { step: 2, x: 220, y: 280, latex: "4x+3 = k", hideOnStep: 4, className: "text-indigo-700 text-xl font-black bg-white/90 px-2 rounded-lg shadow-sm" },
-                        { step: 2, x: 80, y: 150, latex: "k", className: "text-indigo-700 text-xl font-black bg-white/90 px-2 rounded-lg shadow-sm" },
-                        
-                        { step: 3, x: 280, y: 100, latex: "\\mathbf{k = 11}", className: "text-amber-600 text-2xl font-black bg-amber-50 border-2 border-amber-300 px-3 py-1 shadow-md rounded-xl z-20" },
-                        
-                        { step: 4, x: 220, y: 280, latex: "11 = 4x+3 \\Rightarrow x = 2", className: "text-rose-600 text-2xl sm:text-3xl font-black bg-white p-2 rounded-xl shadow-lg border-2 border-rose-300 z-20" }
-                    ]
-                }
-            }
-        ];
-
-        function App() {
-            const [exIdx, setExIdx] = useState(0);
-            const [step, setStep] = useState(0);
-            const [isMuted, setIsMuted] = useState(false);
-            
-            const curEx = EXERCISES[exIdx];
-            const maxSteps = curEx.stepsText.length - 1;
-
-            const startExercise = (index) => {
-                AudioController.init();
-                AudioController.play('pop');
-                setExIdx(index);
-                setStep(0);
-            };
-
-            const nextStep = () => {
-                AudioController.init();
-                if (step < maxSteps) {
-                    AudioController.play('pop');
-                    setStep(step + 1);
-                } else if (step === maxSteps) {
-                    AudioController.play('success');
-                }
-            };
-
-            const prevStep = () => {
-                AudioController.init();
-                if (step > 0) {
-                    AudioController.play('pop-reverse');
-                    setStep(step - 1);
-                }
-            };
-
-            const toggleMute = () => { AudioController.init(); setIsMuted(AudioController.toggleMute()); };
-
-            return (
-                <div className="w-screen h-[100dvh] bg-gradient-to-br from-[#0f172a] via-[#312e81] to-[#831843] text-slate-800 flex flex-col p-2 sm:p-4 relative font-fun overflow-hidden">
-                    
-                    <div className="absolute inset-0 overflow-hidden pointer-events-none z-0 opacity-20">
-                        {['<', '>', '±', '√', 'x', 'y', '∞', '+', '-'].map((sym, i) => (
-                            <div key={i} className="absolute text-white font-black animate-floatUp select-none" style={{ left: `${Math.random()*100}%`, bottom: '-15%', fontSize: `${1+Math.random()*3}rem`, animationDuration: `${10+Math.random()*15}s`, animationDelay: `-${Math.random()*20}s` }}>{sym}</div>
-                        ))}
-                    </div>
-                    
-                    {step === maxSteps && (
-                        <div className="absolute inset-0 pointer-events-none z-50 flex items-center justify-center overflow-hidden">
-                            {Array.from({length:60}).map((_, i) => (
-                                <div key={i} className="absolute w-3 h-3 sm:w-4 sm:h-4 rounded-full animate-confettiExplosion" style={{ backgroundColor: ['#fde047', '#60a5fa', '#f472b6', '#34d399'][i%4], '--tx': `${(Math.random()-0.5)*800}px`, '--ty': `${(Math.random()-1)*800}px`, '--rot': `${Math.random()*720}deg`, left: '50%', top: '50%' }} />
-                            ))}
-                        </div>
-                    )}
-
-                    <div className="shrink-0 relative z-10 w-[96%] max-w-[1400px] mx-auto flex justify-between items-center mb-3 px-1">
-                        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-xl border-2 border-yellow-300 bg-white/15 backdrop-blur-md text-yellow-300 font-black tracking-wider shadow-md text-sm sm:text-base">
-                            <Rocket className="w-5 h-5 text-yellow-300" /> TuProfe20 Lab
-                        </div>
-
-                        <div className="flex items-center gap-1.5 sm:gap-2 bg-black/30 p-1.5 sm:p-2 rounded-xl border-2 border-white/20 backdrop-blur-md shadow-lg overflow-x-auto scrollbar-hide max-w-[50vw]">
-                            {EXERCISES.map((ex, i) => (
-                                <button key={ex.id} onClick={() => startExercise(i)} className={`shrink-0 w-8 h-8 sm:w-11 sm:h-11 rounded-lg font-black text-sm sm:text-base transition-all ${exIdx === i ? 'bg-yellow-400 text-slate-900 scale-110 shadow-[0_0_15px_rgba(250,204,21,0.6)]' : 'text-white hover:bg-white/20'}`}>
-                                    {ex.id}
-                                </button>
-                            ))}
-                        </div>
-
-                        <button onClick={toggleMute} className="p-2 sm:p-3 rounded-xl bg-white/10 border-2 border-white/30 text-white hover:bg-white/20 transition-all shadow-lg">
-                            {isMuted ? <VolumeX className="w-5 h-5 sm:w-6 sm:h-6" /> : <Volume2 className="w-5 h-5 sm:w-6 sm:h-6" />}
-                        </button>
-                    </div>
-
-                    <div className="flex-1 min-h-0 relative z-10 w-[96%] max-w-[1400px] mx-auto bg-slate-50 rounded-[2rem] border-[6px] border-slate-100 shadow-[0_30px_60px_rgba(0,0,0,0.5)] flex flex-col overflow-hidden">
-                        
-                        <div className="shrink-0 bg-slate-900 border-b-[4px] border-cyan-500 px-4 py-4 sm:px-6 flex flex-col justify-center relative shadow-md z-20">
-                            <div className="flex justify-between items-center w-full max-w-5xl mx-auto mb-2">
-                                <span className="bg-cyan-500 text-slate-900 font-black text-xs sm:text-sm px-3 py-1 rounded-md shadow-sm">
-                                    {curEx.title}
-                                </span>
-                                <span className="text-yellow-300 font-bold text-xs sm:text-sm bg-white/10 px-3 py-1 rounded-md">
-                                    {curEx.subtitle}
-                                </span>
-                            </div>
-                            <div className="flex flex-col items-center justify-center text-white font-bold text-lg sm:text-xl md:text-2xl text-center w-full max-w-5xl mx-auto leading-relaxed math-enunciado">
-                                {curEx.enunciado()}
-                            </div>
-                        </div>
-
-                        <div className="flex-1 flex flex-col md:flex-row bg-slate-50 relative overflow-hidden">
-                            
-                            {/* Left Panel: Recordatorio + Procedimiento */}
-                            <div className="w-full md:w-1/3 border-r-2 border-slate-200/50 p-4 flex flex-col bg-indigo-50/60 overflow-y-auto scrollbar-hide"
-                                 style={{ backgroundImage: 'linear-gradient(to right, rgba(0,0,0,0.1) 1px, transparent 1px), linear-gradient(to bottom, rgba(0,0,0,0.1) 1px, transparent 1px)', backgroundSize: '24px 24px' }}>
-                                <ReminderTriangle type={curEx.type} />
-                                
-                                <div className="mt-6 flex flex-col gap-4 relative">
-                                    <div className="absolute left-4 top-0 bottom-0 w-1 bg-slate-200 rounded-full z-0"></div>
-                                    {curEx.stepsText.map((text, idx) => (
-                                        <div key={idx} className={`relative z-10 flex gap-3 transition-all duration-300 ${idx <= step ? 'opacity-100 translate-x-0' : 'opacity-30 -translate-x-4'}`}>
-                                            <div className={`w-8 h-8 rounded-full shrink-0 flex items-center justify-center font-black text-sm border-2 shadow-sm ${idx === step ? 'bg-cyan-500 text-white border-cyan-600 scale-110' : idx < step ? 'bg-emerald-400 text-white border-emerald-500' : 'bg-slate-100 text-slate-400 border-slate-300'}`}>
-                                                {idx + 1}
-                                            </div>
-                                            <div className={`p-2 rounded-lg text-sm sm:text-base font-bold ${idx === step ? 'bg-cyan-50 text-slate-800 shadow-sm' : 'text-slate-500'}`}>
-                                                {text}
-                                            </div>
-                                        </div>
-                                    ))}
-                                </div>
-                            </div>
-
-                            {/* Right Panel: Gráfico interactivo */}
-                            <div className="w-full md:w-2/3 bg-slate-50 flex flex-col items-center justify-center relative p-2 pointer-events-none">
-                                <h3 className="absolute top-4 left-4 font-black text-slate-400 uppercase tracking-widest text-xs flex items-center gap-1 z-20">
-                                    <Activity className="w-4 h-4 text-cyan-400"/> Zona Gráfica
-                                </h3>
-                                <TriangleGraphic config={curEx.graphic} currentStep={step} />
-                            </div>
-
-                            <DrawingCanvas />
-                        </div>
-
-                        <div className="shrink-0 bg-gradient-to-b from-[#e0e7ff] to-[#c7d2fe] p-2 sm:p-3 w-full flex flex-col items-center border-t-[4px] border-white z-40 relative">
-                            <div className="flex justify-center items-stretch w-full max-w-2xl gap-2 sm:gap-4 h-10 sm:h-12">
-                                <button onClick={prevStep} disabled={step === 0} className="flex-[1] bg-[#a5b4fc] border-b-[4px] border-[#6366f1] text-[#312e81] rounded-l-xl font-black text-sm sm:text-base flex items-center justify-center gap-1 active:border-b-0 active:translate-y-[4px] disabled:opacity-40 transition-all hover:bg-[#c7d2fe]">
-                                    <ChevronLeft className="w-5 h-5 stroke-[3px]" />
-                                    <span>Atrás</span>
-                                </button>
-                                
-                                <div className="bg-[#6366f1] text-white font-black px-4 sm:px-6 text-sm sm:text-base flex items-center justify-center border-b-[4px] border-[#4338ca] shadow-inner whitespace-nowrap">
-                                    Paso {step + 1} de {maxSteps + 1}
-                                </div>
-                                
-                                <button onClick={nextStep} disabled={step === maxSteps} className="flex-[2] border-b-[4px] text-white rounded-r-xl font-black text-sm sm:text-base flex items-center justify-center gap-1 active:border-b-0 active:translate-y-[4px] disabled:opacity-40 transition-all shadow-sm hover:brightness-110 bg-gradient-to-r from-[#06b6d4] to-[#0284c7] border-[#0369a1]">
-                                    <span>{step < maxSteps ? 'Siguiente Paso' : '¡Completado!'}</span>
-                                    {step < maxSteps && <ChevronRight className="w-5 h-5 stroke-[3px]" />}
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            );
-        }
-
-        const root = ReactDOM.createRoot(document.getElementById('root'));
-        root.render(<App />);
-    </script>
-</body>
-</html>
+// Fórmulas renderizadas mediante KaTeX. Un error de sintaxis no rompe el ejercicio.
+function tex(source){const expression=String(source||'');if(window.katex){try{return window.katex.renderToString(expression,{throwOnError:false,strict:'ignore',output:'html',trust:false})}catch(e){}}return expression.replace(/&/g,'&amp;').replace(/</g,'&lt;')}
+function M(latex){return `<span class="math-part">${tex(latex)}</span>`}
+function latexToken(t){let v=String(t).trim().replace(/≈/g,'\\approx ').replace(/−/g,'-').replace(/·/g,'\\cdot ').replace(/÷/g,'\\div ').replace(/⇒/g,'\\Rightarrow ');v=v.replace(/√\(?([0-9]+)\)?/g,'\\sqrt{$1}').replace(/°/g,'^{\\circ}');v=v.replace(/∠([A-Z])/g,'\\angle $1');return v}
+// Reconoce únicamente los fragmentos matemáticos; el resto continúa siendo prosa legible.
+function richText(raw){
+ const token=/((?:\b[A-Z]{2}\b|∠[ABC]|\b[A-Z]\b|\b[0-9]+(?:\.[0-9]+)?°|≈\s*[0-9]+°|(?:[0-9]+)?√[23]|[0-9]+\s*[xk]|\bk√[23]|\b[0-9]+(?:\.[0-9]+)?\b|\bx\b|\bk\b|\b[0-9]+[–-][0-9]+\b)(?:\s*(?:=|\+|−|\-|·|÷|:|⇒|≈)\s*(?:[0-9]+(?:\.[0-9]+)?|[A-Z]{2}|[0-9]+x|[0-9]+k|x|k|(?:[0-9]+)?√[23]|k√[23]))*)/g;
+ return String(raw).split(token).map((part,i)=>i%2?M(latexToken(part)):part.replace(/&/g,'&amp;').replace(/</g,'&lt;')).join('');
+}
+const algebraStages=[["AB=2\\sqrt3", "AB=k,\\quad BC=k\\sqrt3", "k=2\\sqrt3", "BC=2\\sqrt3\\cdot\\sqrt3=\\boxed6"], ["BC=7", "AB=BC=k,\\quad AC=k\\sqrt2", "k=7", "AC=\\boxed{7\\sqrt2}"], ["AC=10", "AB=3k,\\quad BC=4k,\\quad AC=5k", "5k=10\\Rightarrow k=2", "AB=3(2)=\\boxed6\\ \\mathrm{m}"], ["AB=4\\sqrt3", "AB=k,\\quad BC=k\\sqrt3", "k=4\\sqrt3", "BC=4\\sqrt3\\cdot\\sqrt3=\\boxed{12}"], ["AB=5x+2,\\quad AC=12\\sqrt2", "AB=k,\\quad AC=k\\sqrt2", "k\\sqrt2=12\\sqrt2\\Rightarrow k=12", "5x+2=12\\Rightarrow x=\\boxed2"], ["BC=12\\ \\mathrm{cm}", "AB=3k,\\quad BC=4k,\\quad AC=5k", "4k=12\\Rightarrow k=3", "P=9+12+15=\\boxed{36}\\ \\mathrm{cm}"], ["AB=4\\ \\mathrm{m},\\ BC=3\\ \\mathrm{m}", "AC=5\\ \\mathrm{m}", "AB_{nuevo}=4-1=3\\ \\mathrm{m}", "BC_{nuevo}=4\\Rightarrow \\Delta=4-3=\\boxed1\\ \\mathrm{m}"], ["AC=14", "AC=2k,\\quad BC=k\\sqrt3", "2k=14\\Rightarrow k=7", "BC=\\boxed{7\\sqrt3}"], ["BC=11\\sqrt2", "BC=k\\sqrt2,\\quad AB=AC=k", "k\\sqrt2=11\\sqrt2\\Rightarrow k=11", "AB=\\boxed{11}"], ["BC=12\\ \\mathrm{cm}", "BC=4k,\\quad AC=5k", "4k=12\\Rightarrow k=3", "AC=5(3)=\\boxed{15}\\ \\mathrm{cm}"]];
+// Los 10 retos conservan sus enunciados y adquieren progresión de etiquetas.
+// Cada línea del esquema corresponde al paso algebraico del panel izquierdo.
+const evolutions=[
+ // 1: el ángulo de 60° está en A, cateto menor AB
+ [{AB:'2\\sqrt3',BC:'x',AC:'?'},{AB:'k=2\\sqrt3',BC:'k\\sqrt3',AC:'2k'},{AB:'k=2\\sqrt3',BC:'(2\\sqrt3)\\sqrt3',AC:'2k'},{AB:'2\\sqrt3',BC:'\\boxed{6}',AC:'4\\sqrt3'}],
+ // 2
+ [{AB:'?',BC:'7',AC:'x'},{AB:'k',BC:'k=7',AC:'k\\sqrt2'},{AB:'7',BC:'k=7',AC:'7\\sqrt2'},{AB:'7',BC:'7',AC:'\\boxed{7\\sqrt2}'}],
+ // 3
+ [{AB:'x',BC:'?',AC:'10'},{AB:'3k',BC:'4k',AC:'5k=10'},{AB:'3(2)',BC:'4(2)',AC:'5k=10\\Rightarrow k=2'},{AB:'\\boxed{6}',BC:'8',AC:'10'}],
+ // 4
+ [{AB:'4\\sqrt3',BC:'x',AC:'?'},{AB:'k=4\\sqrt3',BC:'k\\sqrt3',AC:'2k'},{AB:'4\\sqrt3',BC:'4\\sqrt3\\cdot\\sqrt3',AC:'8\\sqrt3'},{AB:'4\\sqrt3',BC:'\\boxed{12}',AC:'8\\sqrt3'}],
+ // 5
+ [{AB:'5x+2',BC:'?',AC:'12\\sqrt2'},{AB:'k',BC:'k',AC:'k\\sqrt2=12\\sqrt2'},{AB:'5x+2=12',BC:'12',AC:'12\\sqrt2'},{AB:'x=\\boxed{2}',BC:'12',AC:'12\\sqrt2'}],
+ // 6
+ [{AB:'?',BC:'12',AC:'?'},{AB:'3k',BC:'4k=12',AC:'5k'},{AB:'3(3)=9',BC:'4k=12\\Rightarrow k=3',AC:'5(3)=15'},{AB:'9',BC:'12',AC:'15'}],
+ // 7 (escalera inicialmente): altura 4, base 3; actualizada altura 3 y base 4
+ [{AB:'4\\,m',BC:'3\\,m',AC:'5\\,m'},{AB:'4\\,m',BC:'3\\,m',AC:'5\\,m'},{AB:'4-1=3\\,m',BC:'x',AC:'5\\,m'},{AB:'3\\,m',BC:'4\\,m',AC:'5\\,m'}],
+ // 8
+ [{AB:'?',BC:'x',AC:'14'},{AB:'k',BC:'k\\sqrt3',AC:'2k=14'},{AB:'k=7',BC:'7\\sqrt3',AC:'14'},{AB:'7',BC:'\\boxed{7\\sqrt3}',AC:'14'}],
+ // 9 : right angle A, BC hypotenuse
+ [{AB:'x',BC:'11\\sqrt2',AC:'?'},{AB:'k',BC:'k\\sqrt2=11\\sqrt2',AC:'k'},{AB:'k=11',BC:'11\\sqrt2',AC:'11'},{AB:'\\boxed{11}',BC:'11\\sqrt2',AC:'11'}],
+ // 10
+ [{AB:'?',BC:'12',AC:'x'},{AB:'3k',BC:'4k=12',AC:'5k'},{AB:'3(3)=9',BC:'k=3',AC:'5(3)'},{AB:'9',BC:'12',AC:'\\boxed{15}'}]
+];
+const theory={
+ '30-60':{title:'30°–60°–90°',ratio:['k','k\\sqrt3','2k'],descr:'Opuesto a 30°: k · Opuesto a 60°: k√3 · Hipotenusa: 2k',coords:[32,60,92,60,32,10]},
+ '45-45':{title:'45°–45°–90°',ratio:['k','k','k\\sqrt2'],descr:'Ambos catetos miden k; la hipotenusa mide k√2.',coords:[30,60,90,60,30,0]},
+ '37-53':{title:'37°–53°–90° (aprox.)',ratio:['3k','4k','5k'],descr:'Opuesto a 37°: 3k · Opuesto a 53°: 4k · Hipotenusa: 5k',coords:[25,62,100,62,25,6]}
+};
+function renderMemory(c){let t=theory[c.type],r=t.ratio;const panel=$('memoryPanel');panel.innerHTML=`<div class="memory-copy"><strong>💡 Recordatorio · ${M(latexToken(t.title.replace('(aprox.)','')))}</strong><div class="memory-equation">${r.map((v,i)=>`<span>${M(v)}</span>`).join('')}</div><div class="memory-tip">${richText(t.descr)}</div></div><div class="memory-figure"><svg viewBox="0 0 110 78" role="img" aria-label="Esquema de proporciones"><path d="M20 65 L20 12 L92 65 Z" fill="#9ddaff77" stroke="#3666e7" stroke-width="3" stroke-linejoin="round"/><path d="M20 54 H31 V65" fill="none" stroke="#ec4272" stroke-width="2"/><path d="M25 28 Q31 30 34 35" fill="none" stroke="#df498c" stroke-width="2"/></svg></div>`}
+function beep(kind='click'){if(silent)return;try{const A=window.AudioContext||window.webkitAudioContext;if(!window.ac)window.ac=new A();let ac=window.ac;if(ac.state==='suspended')ac.resume();const frequencies=kind==='good'?[523,659,784]:kind==='bad'?[260,210]:[510];frequencies.forEach((f,i)=>{let o=ac.createOscillator(),g=ac.createGain(),t=ac.currentTime+i*.08;o.type='sine';o.frequency.value=f;g.gain.setValueAtTime(.001,t);g.gain.exponentialRampToValueAtTime(.075,t+.018);g.gain.exponentialRampToValueAtTime(.001,t+.17);o.connect(g);g.connect(ac.destination);o.start(t);o.stop(t+.18)})}catch(e){}}
+function home(){beep();$('game').classList.add('hidden');$('home').classList.remove('hidden');$('homeBtn').textContent='⌂ Portada'}
+function start(n){index=n;step=0;angleChosen=null;feedbackState='';$('answerInput').value='';$('feedback').textContent='';$('home').classList.add('hidden');$('game').classList.remove('hidden');mode='select';updateTool();clearDraw(false);render();beep()}
+function renderCards(){$('cards').innerHTML=challenges.map((c,i)=>`<button class="challenge" data-idx="${i}" style="background:linear-gradient(132deg,${gradients[i][0]},${gradients[i][1]});animation-delay:${i*.05}s"><span class="num">RETO ${i+1} / 10</span>${solved.has(i)?'<span class="done">✓</span>':''}<span class="ico">${['📐','📏','🔺','✨','🧮','📐','🪜','📊','🧩','🏆'][i]}</span><h3>${c.name}</h3><small>${c.type} · ${c.level}</small></button>`).join('');$('cards').querySelectorAll('.challenge').forEach(b=>b.addEventListener('click',()=>start(+b.dataset.idx)))}
+function render(){const c=challenges[index];$('typeChip').textContent=c.type+' · '+c.level;$('prompt').innerHTML=`<b>Reto ${index+1}.</b> ${richText(c.question)}`;$('gamebar').innerHTML=challenges.map((r,i)=>`<button class="smallbtn ${i===index?'active':''}" data-i="${i}" title="${r.name}">${i+1}${solved.has(i)?'✓':''}</button>`).join('');$('gamebar').querySelectorAll('button').forEach(b=>b.onclick=()=>start(+b.dataset.i));$('steps').innerHTML=c.work.map((s,i)=>`<div class="step ${i===step?'current':i<step?'past':'future'}"><b>${i+1}</b><span>${richText(s)}</span></div>`).join('');$('formula').innerHTML=M(algebraStages[index][step]);$('progress').textContent=`Reto ${index+1}/10 · Paso ${step+1}/4`;$('prevBtn').disabled=step===0;$('nextBtn').textContent=step===3?'Siguiente reto ▶':'Siguiente paso ▶';$('speech').textContent=feedbackState||['Observa los datos y los ángulos: los verás sobre el triángulo.','Ahora la figura muestra las proporciones del triángulo notable.','Observa cómo reemplazamos los datos para obtener k.','En el gráfico ya aparecen las medidas calculadas. ¡Comprueba tu resultado!'][step];$('robot').textContent=feedbackState.startsWith('¡Correcto')?'🥳':feedbackState.startsWith('Revisa')?'🤔':step===3?'🤖✨':'🤖';drawTriangle(c);resizeCanvas();}
+function geometry(c){if(index===6 && step>=2){c={...c,angA:53.13};}if(c.rightAt==='A')return {A:{x:130,y:255},B:{x:130,y:70},C:{x:315,y:255},right:'A',a:'B',b:'C',angleB:45,angleC:45};const a=c.angA,alpha=a*Math.PI/180,maxHeight=196,maxBase=260;let h=185,base=Math.tan(alpha)*h;if(base>maxBase){base=maxBase;h=base/Math.tan(alpha)};const A={x:140,y:270-h},B={x:140,y:270},C={x:140+base,y:270};return{A,B,C,right:'B',a:'A',b:'C',angleA:a,angleC:90-a}}
+function arcPath(V,U,W,r){const a1=Math.atan2(U.y-V.y,U.x-V.x),a2=Math.atan2(W.y-V.y,W.x-V.x);let dif=(a2-a1+Math.PI*2)%(Math.PI*2);if(dif>Math.PI){let tmp=U;U=W;W=tmp;return arcPath(V,U,W,r)}const p=(a)=>({x:V.x+r*Math.cos(a),y:V.y+r*Math.sin(a)}),s=p(a1),e=p(a1+dif);return{line:`M${V.x},${V.y} L${s.x},${s.y} A${r},${r} 0 0 1 ${e.x},${e.y} Z`,mid:p(a1+dif/2)}}
+function drawTriangle(c){
+ const g=geometry(c),{A,B,C}=g;const pts=`${A.x},${A.y} ${B.x},${B.y} ${C.x},${C.y}`;const right=g.right;
+ let angle1,angle2;
+ if(right==='A'){
+  angle1={id:'B',...arcPath(B,A,C,35),label:'45^{\\circ}'};
+  angle2={id:'C',...arcPath(C,B,A,35),label:'45^{\\circ}'};
+ }else{
+  angle1={id:'A',...arcPath(A,B,C,36),label:`${Math.round(g.angleA)}^{\\circ}`};
+  angle2={id:'C',...arcPath(C,A,B,36),label:`${Math.round(g.angleC)}^{\\circ}`};
+ }
+ const legLabels=evolutions[index][step];
+ const mid=(p,q)=>({x:(p.x+q.x)/2,y:(p.y+q.y)/2});let ab=mid(A,B),bc=mid(B,C),ac=mid(A,C);
+ const sq=right==='A'?`M${A.x},${A.y+17} L${A.x+17},${A.y+17} L${A.x+17},${A.y}`:`M${B.x},${B.y-18} L${B.x+18},${B.y-18} L${B.x+18},${B.y}`;
+ const drawArc=o=>`<path class="angle-sector ${angleChosen===o.id?'chosen':''}" data-angle="${o.id}" d="${o.line}" fill="${angleChosen===o.id?'#ffc83ca3':'#fb4f9b45'}" stroke="${angleChosen===o.id?'#ff9600':'#e93a87'}" stroke-width="3.2"/>`;
+ const isResult=(v)=>v.includes('\\boxed');
+ function pill(x,y,raw,key){const posx=Math.max(15,Math.min(500,x-82)),posy=Math.max(9,Math.min(310,y-24));return `<foreignObject class="side-fo" x="${posx}" y="${posy}" width="174" height="66"><div xmlns="http://www.w3.org/1999/xhtml" style="display:flex;align-items:center;justify-content:center;width:100%;height:100%"><span class="side-math ${isResult(raw)?'result':step===2?'current':''}">${tex(raw)}</span></div></foreignObject>`}
+ function anglePill(o){const off=o.id==='A'?{x:15,y:7}:{x:-3,y:-30};let x=Math.max(0,Math.min(435,o.mid.x+off.x-43)),y=Math.max(0,Math.min(305,o.mid.y+off.y-16));return `<foreignObject class="side-fo" x="${x}" y="${y}" width="90" height="45"><div xmlns="http://www.w3.org/1999/xhtml" class="angle-math">${tex(o.label)}</div></foreignObject>`}
+ function vertex(v,n){const dx=n==='C'?15:-26,dy=n==='A'?-13:24;return `<text class="vertex" x="${v.x+dx}" y="${v.y+dy}">${n}</text>`}
+ let legendNote=step===0?'Datos iniciales':step===1?'Relaciones del notable':step===2?'Despeje y sustitución':'Resultado en la figura';
+ const sideCoordinates={AB:[ab.x-70,ab.y],BC:[bc.x,bc.y+38],AC:[ac.x+67,ac.y-13]};
+ $('triangle').innerHTML=`<defs><linearGradient id="tfill" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#00dfee" stop-opacity=".44"/><stop offset="1" stop-color="#a678ff" stop-opacity=".27"/></linearGradient><filter id="sh"><feDropShadow dx="1" dy="5" stdDeviation="4" flood-color="#4462ba" flood-opacity=".22"/></filter></defs><polygon class="tri-outline" points="${pts}" fill="url(#tfill)" stroke="#1f62e8" stroke-width="5" stroke-linejoin="round" filter="url(#sh)"/>${drawArc(angle1)}${drawArc(angle2)}<path d="${sq}" stroke="#ef515a" stroke-width="3.4" fill="none"/>${vertex(A,'A')}${vertex(B,'B')}${vertex(C,'C')}${anglePill(angle1)}${anglePill(angle2)}${pill(...sideCoordinates.AB,legLabels.AB,'AB')}${pill(...sideCoordinates.BC,legLabels.BC,'BC')}${pill(...sideCoordinates.AC,legLabels.AC,'AC')}`;
+ $('angleHelp').innerHTML=`${angleChosen?`Ángulo ${angleChosen} seleccionado`:`${legendNote} · Selecciona un ángulo`}`;
+ $('triangle').querySelectorAll('[data-angle]').forEach(p=>p.addEventListener('click',()=>{angleChosen=p.dataset.angle;feedbackState='¡Bien! Has seleccionado un ángulo importante.';beep();render()}));
+}
+function normalize(s){return String(s).toLowerCase().replace(/\s|cm|metros?|m\b|\*/g,'').replace(/√\(?3\)?/g,'√3').replace(/√\(?2\)?/g,'√2').replace(/,/g,'.')}
+function check(){let c=challenges[index],v=normalize($('answerInput').value),ok=v===normalize(c.answer);if(ok){solved.add(index);feedbackState='¡Correcto! Identificaste la relación y resolviste el reto.';$('feedback').style.color='#0c9968';$('feedback').textContent='✓ ¡Respuesta correcta!';beep('good');renderCards()}else{feedbackState='Revisa el triángulo. Mira qué lado se opone al ángulo conocido y sigue las pistas.';$('feedback').style.color='#e33561';$('feedback').textContent='↻ Intenta otra vez';beep('bad')}render()}
+function next(){if(step<3){step++;feedbackState='';beep();render()}else if(index<9){start(index+1)}else{home()}}
+function prev(){if(step>0){step--;feedbackState='';beep();render()}}
+function hint(){feedbackState=challenges[index].work[Math.min(step+1,3)];beep();render()}
+function resizeCanvas(){if(!$('game').classList.contains('hidden')){const r=$('stage').getBoundingClientRect();if(r.width<1||r.height<1)return;const data=canvas.width&&canvas.height?document.createElement('canvas'):null;if(data){data.width=canvas.width;data.height=canvas.height;data.getContext('2d').drawImage(canvas,0,0)}const w=Math.round(r.width),h=Math.round(r.height);if(canvas.width===w&&canvas.height===h)return;canvas.width=w;canvas.height=h;if(data)ctx.drawImage(data,0,0,data.width,data.height,0,0,w,h);history=[]}}
+function updateTool(){for(const [id,m] of [['selectTool','select'],['penTool','pen'],['markerTool','marker']])$(id).classList.toggle('active',mode===m);canvas.style.pointerEvents=mode==='select'?'none':'auto';canvas.style.cursor=mode==='select'?'default':'crosshair'}
+function save(){if(!canvas.width)return;history.push(ctx.getImageData(0,0,canvas.width,canvas.height));if(history.length>30)history.shift()}
+function undo(){if(history.length){ctx.putImageData(history.pop(),0,0);beep()}}
+function clearDraw(record=true){if(record)save();ctx.clearRect(0,0,canvas.width,canvas.height);if(!record)history=[]}
+function pos(e){const r=canvas.getBoundingClientRect();return{x:(e.clientX-r.left)*canvas.width/r.width,y:(e.clientY-r.top)*canvas.height/r.height}}
+canvas.addEventListener('pointerdown',e=>{if(mode==='select'||(e.pointerType==='mouse'&&e.button!==0))return;resizeCanvas();save();drawing=true;activePointer=e.pointerId;canvas.setPointerCapture(e.pointerId);last=pos(e);ctx.beginPath();ctx.moveTo(last.x,last.y);ctx.strokeStyle=mode==='marker'?color+'2B':color;ctx.lineWidth=mode==='marker'?23:width;ctx.lineCap='round';ctx.lineJoin='round';ctx.globalCompositeOperation='source-over';ctx.lineTo(last.x+.1,last.y+.1);ctx.stroke()});
+canvas.addEventListener('pointermove',e=>{if(!drawing||e.pointerId!==activePointer)return;const p=pos(e);ctx.lineTo(p.x,p.y);ctx.stroke();last=p});function finish(e){if(!drawing)return;drawing=false;activePointer=null;ctx.closePath();if(e&&canvas.hasPointerCapture(e.pointerId))canvas.releasePointerCapture(e.pointerId)}canvas.addEventListener('pointerup',finish);canvas.addEventListener('pointercancel',finish);
+$('checkBtn').onclick=check;$('hintBtn').onclick=hint;$('nextBtn').onclick=next;$('prevBtn').onclick=prev;$('homeBtn').onclick=home;$('soundBtn').onclick=()=>{silent=!silent;$('soundBtn').textContent=silent?'🔇 Silencio':'🔊 Sonido';if(!silent)beep()};$('answerInput').addEventListener('keydown',e=>{if(e.key==='Enter')check()});$('selectTool').onclick=()=>{mode='select';updateTool()};$('penTool').onclick=()=>{mode='pen';updateTool()};$('markerTool').onclick=()=>{mode='marker';updateTool()};$('undoBtn').onclick=undo;$('clearBtn').onclick=()=>clearDraw();$('widthInput').oninput=e=>width=+e.target.value;document.querySelectorAll('[data-color]').forEach(el=>el.onclick=()=>{color=el.dataset.color;document.querySelectorAll('[data-color]').forEach(b=>b.classList.toggle('selected',b===el))});window.addEventListener('keydown',e=>{const inInput=e.target.matches('input,textarea');if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='z'&&!$('game').classList.contains('hidden')){e.preventDefault();undo();return}if(inInput)return;if(e.key==='Escape'){mode='select';updateTool()}if($('game').classList.contains('hidden'))return;if(e.key==='ArrowRight'){e.preventDefault();next()}if(e.key==='ArrowLeft'){e.preventDefault();prev()}});window.addEventListener('resize',resizeCanvas);renderCards();
+</script></body></html>
